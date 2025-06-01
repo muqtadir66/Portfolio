@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -5,164 +6,202 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Muq Hussain – Portfolio</title>
 
-    <!--
-      -----------------------------------------------------------------------
-      𝙋𝙤𝙧𝙩𝙛𝙤𝙡𝙞𝙤 𝙎𝙞𝙩𝙚 𝙑𝟐 – bug‑hardened
-      -----------------------------------------------------------------------
-       Safe to import in *any* environment (browser, Node test‑runner, etc.)
-       No external network calls – icons & fonts are local / data‑URIs
-       DOM logic executes *only* when `document` is available (prevents the
-        ChromeTransport / headless launch error seen in sandbox tests).
-       Added basic self‑tests to verify data structure at runtime.
-    -->
+    <!-- Retro pixel font for landing / navbar headings -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
 
     <style>
-      /************ 1. BASE LAYOUT ************/
-      *, *::before, *::after {
+      /* -------------------- CSS RESET ------------------- */
+      * {
         box-sizing: border-box;
-      }
-      html, body {
         margin: 0;
         padding: 0;
-        font-family: "Helvetica Neue", Arial, sans-serif;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      /* ==================================================
+         1.  LANDING  (Retro / Win‑98 Hacker vibe)
+      ===================================================*/
+      body {
         background: #fafafa;
         color: #222;
         line-height: 1.5;
       }
 
+      #landing {
+        position: fixed;
+        inset: 0;
+        background: #0044b3 url("https://images.unsplash.com/photo-1524141330126-2d5ee54ac98c?auto=format&fit=crop&w=1400&q=80") center/cover no-repeat;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 4000;
+      }
+      #landing::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 68, 179, 0.8); /* deep blue overlay */
+      }
+      .terminal {
+        position: relative;
+        z-index: 1;
+        background: #000;
+        color: #23ff3d;
+        padding: 2rem 3rem;
+        border: 4px double #23ff3d;
+        font-family: "Press Start 2P", monospace;
+        font-size: 0.8rem;
+        max-width: 90vw;
+        width: 500px;
+        text-shadow: 0 0 4px #23ff3d;
+      }
+      .terminal p { margin-bottom: 1rem; }
+      .terminal .cmd { color: #0dffef; }
+      #enterBtn {
+        margin-top: 1.5rem;
+        display: inline-block;
+        background: #23ff3d;
+        color: #000;
+        padding: 0.5rem 1.25rem;
+        border: none;
+        cursor: pointer;
+        font-family: "Press Start 2P", monospace;
+        font-size: 0.8rem;
+        transition: transform 0.2s;
+      }
+      #enterBtn:hover { transform: translateY(-2px); }
+      #landing.hidden { display: none; }
+      .enter-btn{
+  margin-top:1rem;
+  padding:.4rem 1rem;
+  font-family:inherit;
+  font-size:1rem;
+  border:2px solid #00ff00;
+  background:#000;
+  color:#00ff00;
+  cursor:pointer;
+}
+.enter-btn:active{ background:#004400; }
+.hint{ font-size:.75rem; opacity:.6; }
+
+
+      /* ==================================================
+         2.  MAIN NAVBAR  (still visible after landing)
+      ===================================================*/
       header {
         position: sticky;
         top: 0;
         z-index: 1000;
-        background: rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(16px);
-        border-bottom: 1px solid #e0e0e0;
-        padding: 1rem 2rem;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid #d0d0d0;
+        padding: 0.75rem 1.5rem;
         display: flex;
         justify-content: space-between;
         align-items: center;
       }
       header h1 {
-        font-size: 1.5rem;
-        letter-spacing: .05rem;
+        font-family: "Press Start 2P", monospace;
+        font-size: 1.2rem;
+        letter-spacing: 0.07rem;
       }
-      nav { display: flex; gap: 1rem; }
+      nav { display: flex; gap: 0.75rem; flex-wrap: wrap; }
       nav button {
         background: none;
-        border: none;
-        padding: .5rem .75rem;
-        border-radius: 8px;
+        border: 2px solid transparent;
         cursor: pointer;
+        padding: 0.3rem 0.7rem;
+        border-radius: 6px;
         font-weight: 500;
-        transition: background .25s;
+        transition: background 0.3s, border 0.3s;
+        font-family: "Press Start 2P", monospace;
+        font-size: 0.7rem;
       }
       nav button.active,
-      nav button:hover { background: #e8f0fe; }
-
-      main {
-        max-width: 1200px;
-        margin: auto;
-        padding: 2rem 2rem 4rem;
+      nav button:hover {
+        background: #0044b3;
+        color: #fff;
+        border-color: #fff;
       }
 
-      /************ 2. PROJECT CARDS ************/
+      /* ==================================================
+         3.  PROJECT GRID  (unchanged from previous build)
+      ===================================================*/
+      main { padding: 2rem 2rem 4rem 2rem; max-width: 1200px; margin: auto; }
       .projects { display: grid; gap: 2rem; }
-      @media (min-width: 768px) {
-        .projects {
-          grid-template-columns: repeat(auto-fill,minmax(340px,1fr));
-        }
-      }
+      @media (min-width: 768px) { .projects { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); } }
+
       .card {
-        background: var(--card-bg, #fff);
-        border-radius: 20px;
+        background: #ffffff;
+        border-radius: 16px;
         padding: 1.5rem;
-        box-shadow: 0 4px 14px rgba(0,0,0,.05);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
         display: flex;
         flex-direction: column;
         gap: 1rem;
-        transition: transform .3s, box-shadow .3s;
       }
-      .card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 24px rgba(0,0,0,.08);
-      }
-      .card h3 { margin: 0 0 .25rem; font-size: 1.2rem; }
-      .tags { display: flex; flex-wrap: wrap; gap: .5rem; }
-      .tag {
-        background: #f0f7ff;
-        color: #3367d6;
-        padding: .25rem .5rem;
-        border-radius: 999px;
-        font-size: .7rem;
-        letter-spacing: .04rem;
-      }
-      ul.bullets {
-        padding-left: 1.25rem;
-        list-style: disc;
-        display: flex;
-        flex-direction: column;
-        gap: .25rem;
-      }
+      .card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08); }
+      .card h3 { font-size: 1.1rem; margin-bottom: 0.25rem; font-family: "Press Start 2P", monospace; letter-spacing: 0.03rem; }
+      .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+      .tag { background: #e8f0fe; color: #0044b3; padding: 0.25rem 0.5rem; border-radius: 999px; font-size: 0.6rem; font-family: "Press Start 2P", monospace; }
+      ul.bullets { padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.3rem; list-style: disc; font-size: 0.85rem; }
 
-      /************ 3. MEDIA THUMBNAILS ************/
-      .media-wrap { display: flex; gap: .5rem; overflow-x: auto; }
-      .thumb {
-        width: 80px; height: 80px;
-        border-radius: 12px;
-        object-fit: cover;
-        flex-shrink: 0;
-        cursor: pointer;
-      }
-
-      /************ 4. MODAL ************/
-      .modal {
-        position: fixed; inset: 0;
-        background: rgba(0,0,0,.6);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        z-index: 2000;
-      }
+      /* ==================================================
+         4. MEDIA THUMBNAILS & MODAL
+      ===================================================*/
+      .media-wrap { display: flex; gap: 0.5rem; overflow-x: auto; }
+      .thumb { width: 80px; height: 80px; object-fit: cover; border-radius: 10px; cursor: pointer; flex-shrink: 0; }
+      .modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); display: none; align-items: center; justify-content: center; z-index: 2000; }
       .modal.open { display: flex; }
-      .modal-content {
-        max-width: 90vw; max-height: 90vh;
-        background: #fff;
-        border-radius: 16px;
-        overflow: hidden;
-        position: relative;
-      }
+      .modal-content { max-width: 90vw; max-height: 90vh; background: #000; border: 4px double #23ff3d; overflow: hidden; position: relative; }
       .modal-content iframe,
       .modal-content img,
       .modal-content video { width: 100%; height: 100%; }
-      .close-btn {
-        position: absolute; top: .5rem; right: .5rem;
-        width: 32px; height: 32px; border-radius: 50%;
-        border: none; cursor: pointer; color: #fff;
-        background: rgba(0,0,0,.6);
-        font-size: 1.2rem;
-      }
+      .close-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.8); border: 2px solid #23ff3d; color: #000; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; font-family: "Press Start 2P", monospace; }
 
-      /************ 5. PASTEL PALETTE ************/
+      /* ==================================================
+         5. RETRO CARD BACKGROUND CYCLE  (soft pastels)
+      ===================================================*/
       :root {
-        --pastel-blue:   #d7e8ff;
-        --pastel-pink:   #fce2e8;
+        --pastel-blue: #d7e8ff;
+        --pastel-pink: #fce2e8;
         --pastel-yellow: #fff9d6;
-        --pastel-green:  #dff7e9;
+        --pastel-green: #dff7e9;
       }
-      /* clever CSS trick: nth-child background */
-      .card:nth-child(4n+1) { background: var(--pastel-blue);   }
-      .card:nth-child(4n+2) { background: var(--pastel-pink);   }
-      .card:nth-child(4n+3) { background: var(--pastel-yellow); }
-      .card:nth-child(4n+4) { background: var(--pastel-green);  }
+      .card:nth-child(4n + 1) { background: var(--pastel-blue); }
+      .card:nth-child(4n + 2) { background: var(--pastel-pink); }
+      .card:nth-child(4n + 3) { background: var(--pastel-yellow); }
+      .card:nth-child(4n + 4) { background: var(--pastel-green); }
 
-      /************ 6. SCROLLBAR ************/
-      ::-webkit-scrollbar { width: 8px; height: 8px; }
-      ::-webkit-scrollbar-thumb { background: #c5c5c5; border-radius: 8px; }
+      /* scrollbar */
+      ::-webkit-scrollbar { height: 8px; width: 8px; }
+      ::-webkit-scrollbar-thumb { background: #999; border-radius: 8px; }
     </style>
   </head>
   <body>
+    <!-- ================= LANDING OVERLAY ================ -->
+    <div id="landing">
+      <div class="terminal">
+        <p><span class="cmd">Welcome to muqtadirhussain.exe</span></p>
+        <p>Built with &lt;HTML&gt; + &lt;CSS&gt; + <span class="cmd">JS</span></p>
+        <p>Specialist&nbsp;: Engineering Physics</p>
+        <p>Stack&nbsp;: Python, MATLAB, MCNP, RSoft</p>
+        <p>Experience&nbsp;: Nuclear Systems, Semiconductor Microfabrication, Photonics</p>
+        <p>Press <strong>Enter</strong> or click the button to continue…</p>
+        <button id="enterBtn" class="enter-btn">ENTER ▸</button>
+    <p class="hint">(tap anywhere or press Enter)</p>
+      </div>
+    </div>
+
+    <!-- ================= MAIN PORTFOLIO PAGE ============ -->
     <header>
-      <h1>Muq Hussain</h1>
+      <h1>Muqtadir&nbsp;Hussain</h1>
       <nav id="categoryFilter"></nav>
     </header>
 
@@ -170,23 +209,32 @@
       <section class="projects" id="projects"></section>
     </main>
 
-    <!-- MODAL -->
+    <!-- Modal -->
     <div class="modal" id="modal">
       <div class="modal-content" id="modalContent"></div>
       <button class="close-btn" id="closeBtn">×</button>
     </div>
 
-<script>
-// ======================================================================
-// 1. DATA MODEL (edit this array to add projects)
-// ======================================================================
-/* paste this array into index.html  --------------------------- */
-/* paste into index.html ------------------------------------------------ */
-const projects = [
+    <script>
+      // ------------ Helper ----------------
+      const qs = (sel) => document.querySelector(sel);
+
+      /* ========= 1. LANDING INTERACTION ========= */
+      const landing = qs("#landing");
+      const hideLanding = () => landing.classList.add("hidden");
+      qs("#enterBtn").addEventListener("click", hideLanding);
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !landing.classList.contains("hidden")) hideLanding();
+      });
+      
+
+      /* ========= 2. PROJECT DATA (placeholder) ========= */
+      // REPLACE BELOW with your generated array --------------------------
+      const projects = [
   {
     title: "PID-Controlled Thermoelectric Oven/Cooler",
-    category: "Embedded Systems & Controls",
-    tags: ["MSP430", "C", "PID", "PWM", "MATLAB", "TEC"],
+    category: "Embedded Systems & Controls/Instrumentation",
+    tags: ["MSP430", "C", "PID", "PWM", "TEC", "MATLAB", "GUI"],
     bullets: [
       " Designed and implemented a closed-loop PID temperature control system using a Texas Instruments MSP430 microcontroller and a thermoelectric cooler (TEC) based on the Peltier effect.",
       " Programmed real-time control logic in C, integrating ADC input from an NTC thermistor and generating PWM signals to modulate TEC output.",
@@ -210,8 +258,8 @@ const projects = [
   },
   {
     title: "Ultrasonic Range Finder – Modular Distance Measurement System",
-    category: "Electronics & Instrumentation",
-    tags: ["Ultrasonic", "555 Timer", "Multisim", "Analog", "Digital Logic"],
+    category: "Embedded Systems & Controls/Instrumentation",
+    tags: ["Transceiver", "Oscilloscope", "Multisim (SPICE)", "Analog", "Digital Logic"],
     bullets: [
       " Designed and constructed a 4-module ultrasonic rangefinder using piezoelectric transceivers, analog amplification, digital logic, and 7-segment display systems, targeting centimeter-scale distance readings from 10–99 cm.",
       " Generated and processed high-frequency acoustic pulses using astable 555 timers (40 kHz & 1 Hz), SR latch logic, and comparator-based waveform digitization.",
@@ -227,7 +275,7 @@ const projects = [
     category: "Nuclear Science & Engineering",
     tags: ["HPGe", "NaI(Tl)", "BF₃", "Activation", "Radiography"],
     bullets: [
-      " Conducted four reactor-based experiments involving radiation detection, isotope identification, and neutron-material interactions, using HPGe, NaI(Tl), and BF₃/He-3 detectors.",
+      " Conducted numerous reactor-based experiments involving radiation detection, isotope identification, and neutron-material interactions, using HPGe, NaI(Tl), and BF₃/He-3 detectors.",
       " Modeled radioactive decay curves from neutron-activated samples; computed decay constants and half-lives with full uncertainty analysis, confirming isotope identity as ³⁸Cl.",
       " Measured neutron attenuation through various materials; calculated macroscopic cross-sections via semi-log regression, analyzing scattering effects and validating models.",
       " Captured high-resolution neutron radiographs of internal components using thermal beams; analyzed image contrast and L/D ratio using ASTM E545 standards and ImageJ.",
@@ -236,7 +284,7 @@ const projects = [
     media: []
   },
   {
-    title: "Optical Systems and Imaging Labs – ENGPHYS 3E04",
+    title: "Optical Systems and Imaging Labs",
     category: "Optics & Photonics",
     tags: ["Zemax", "Lens Design", "Gas Sensor", "OCT", "MATLAB"],
     bullets: [
@@ -247,9 +295,9 @@ const projects = [
     media: []
   },
   {
-    title: "Sensor Instrumentation & IoT Systems – ENGPHYS 3L04",
-    category: "Embedded Systems & Controls",
-    tags: ["Arduino", "Transducers", "Hall", "Smart Systems", "IOT", "Adafruit Cloud"],
+    title: "Sensor Instrumentation & IoT Systems",
+    category: "Embedded Systems & Controls/Instrumentation",
+    tags: ["Arduino", "Transducers", "Hall effect", "Smart Systems", "IOT", "Adafruit Cloud"],
     bullets: [
       " Characterized analog and digital sensors including Hall effect, thermistors, thermocouples, phototransistors, and IR reflectivity sensors; extracted signal behavior using real-time data acquisition and curve fitting in Arduino and MATLAB.",
       " Evaluated human-machine interface devices (rotary encoders, joysticks) and pulse sensors (KY-039) for physiological monitoring; implemented analog filtering and noise mitigation to compute BPM accurately.",
@@ -272,7 +320,7 @@ const projects = [
     media: []
   },
   {
-    title: "Biophotonics Literature Project – DO-SRS Imaging of Aging Metabolism (ENGPHYS 4I03)",
+    title: "Biophotonics Literature Project – DO-SRS Imaging of Aging Metabolism",
     category: "Optics & Photonics",
     tags: ["DO-SRS", "Raman", "Metabolism", "Spectroscopy"],
     bullets: [
@@ -312,7 +360,7 @@ const projects = [
     media: []
   },
   {
-    title: "CubeSat Mission Design & Systems Engineering (ENGPHYS 3SP3)",
+    title: "CubeSat Mission Design & Systems Engineering",
     category: "Systems Engineering",
     tags: ["CubeSat", "Systems Eng.", "Orbital Mech.", "Trade Study"],
     bullets: [
@@ -337,12 +385,12 @@ const projects = [
     media: []
   },
   {
-    title: "Fluid Mechanics and Heat Transfer Laboratory Projects (ENGPHYS 3O04)",
+    title: "Fluid Mechanics and Heat Transfer Laboratory Projects",
     category: "Fluid & Thermal Analysis",
-    tags: ["ANSYS Fluent", "CFX", "Venturi", "Heat Exchanger", "Reynolds"],
+    tags: ["ANSYS Fluent", "Flow Systems", "Venturi", "Heat Exchanger", "Reynolds"],
     bullets: [
       " Conducted experimental and simulation-based analysis of internal and external flow systems, including Venturi tubes, pipe networks, and bluff body drag, applying Bernoulli’s principle, Darcy-Weisbach equation, and dimensional analysis.",
-      " Used ANSYS Fluent and ANSYS CFX to simulate laminar and turbulent flow regimes; validated mesh sensitivity and turbulence models against physical measurements from lab setups.",
+      " Used ANSYS Fluent to simulate laminar and turbulent flow regimes; validated mesh sensitivity and turbulence models against physical measurements from lab setups.",
       " Modeled pressure distribution and velocity profiles in pipe systems under varying Reynolds numbers; compared simulation results with experimental manometer readings and derived friction factor plots.",
       " Investigated forced convection and heat exchanger performance; implemented energy balance equations to calculate heat transfer coefficients and effectiveness of parallel and counterflow exchangers.",
       " Simulated transient and steady-state conduction scenarios in composite materials using ANSYS to visualize temperature gradients and thermal flux, correlating with analytical and empirical results.",
@@ -351,7 +399,7 @@ const projects = [
     media: []
   },
   {
-    title: "Monte Carlo Reactor Simulation – Fuel Bundle Optimization for CANDU Reactors (ENGPHYS 4NE3)",
+    title: "Monte Carlo Reactor Simulation – Fuel Bundle Optimization for CANDU Reactors",
     category: "Nuclear Science & Engineering",
     tags: ["MCNP", "CANDU", "Fuel Bundle", "Thorium", "MOX"],
     bullets: [
@@ -364,7 +412,7 @@ const projects = [
     media: []
   },
   {
-    title: "Nuclear Reactor Operation & Simulation – CANDU-9 Systems (ENGPHYS 4P03)",
+    title: "Nuclear Reactor Operation & Simulation – CANDU-9 Systems",
     category: "Nuclear Science & Engineering",
     tags: ["CANDU Sim.", "Xenon Transient", "Point-Kinetics", "Control Rods"],
     bullets: [
@@ -377,9 +425,9 @@ const projects = [
     media: []
   },
   {
-    title: "AI-Based Lead Conversion System Design – Industry Consulting Project",
+    title: "AI-Based Lead Conversion System Design – Engineering and Management Capstone Project (Industry Consulting)",
     category: "Capstone Projects",
-    tags: ["NLP", "Voice Agent", "CRM", "KPIs", "System Arch."],
+    tags: ["Sales", "NLP", "Voice Agent", "CRM", "KPIs", "System Archictecture."],
     bullets: [
       " Engineered an AI-driven autonomous client engagement system to resolve lead qualification and conversion inefficiencies for enterprise software firm SOTI, integrating business process mapping with NLP-capable virtual agents.",
       " Applied systems engineering principles to model input/output workflows for sales funnel automation; designed technical process flowcharts for inbound validation, triage, and outbound engagement.",
@@ -391,7 +439,7 @@ const projects = [
     media: []
   },
   {
-    title: "Silicon Solar Cell Fabrication & Characterization (ENGPHYS 4Z04)",
+    title: "Silicon Solar Cell Fabrication & Characterization",
     category: "Semiconductor Devices & Fabrication",
     tags: ["PERL", "Cleanroom", "KOH Etch", "Photolithography", "I–V"],
     bullets: [
@@ -405,7 +453,7 @@ const projects = [
     media: []
   },
   {
-    title: "TCAD Simulation of Silicon Solar Cell Using Sentaurus (ENGPHYS 4Z04)",
+    title: "TCAD Simulation of Silicon Solar Cell Using Sentaurus",
     category: "Semiconductor Devices & Fabrication",
     tags: ["Sentaurus", "TCAD", "Drift-Diffusion", "EQE", "Optimization"],
     bullets: [
@@ -419,7 +467,7 @@ const projects = [
     media: []
   },
   {
-    title: "Autonomous Blackjack-Dealing System – Engineering Physics Capstone Project (ENGPHYS 4A06A)",
+    title: "Autonomous Blackjack-Dealing System – Engineering Physics Capstone Project",
     category: "Capstone Projects",
     tags: ["Raspberry Pi", "OpenCV", "Python", "Mechatronics", "AI Dealer"],
     bullets: [
@@ -434,7 +482,7 @@ const projects = [
     media: []
   },
   {
-    title: "Photonic Device Theory & Analysis – Assignments (ENGPHYS 3PD4)",
+    title: "Photonic Device Theory & Analysis – Assignments",
     category: "Optics & Photonics",
     tags: ["Waveguides", "Couplers", "Dispersion", "Quantum Well"],
     bullets: [
@@ -446,7 +494,7 @@ const projects = [
     media: []
   },
   {
-    title: "Integrated Photonics Laboratory – Silicon Device Characterization (ENGPHYS 3PD4)",
+    title: "Integrated Photonics Laboratory – Silicon Device Characterization",
     category: "Optics & Photonics",
     tags: ["Silicon Photonics", "Ring Resonator", "PDL", "Probe Station"],
     bullets: [
@@ -458,7 +506,7 @@ const projects = [
     media: []
   },
   {
-    title: "Final Project – Optical Inter-Satellite Communication System (ENGPHYS 3PD4)",
+    title: "Final Project – Optical Inter-Satellite Communication System",
     category: "Optics & Photonics",
     tags: ["Grating Coupler", "RSoft", "BeamPROP", "Gaussian Beam", "ISOC"],
     bullets: [
@@ -470,135 +518,101 @@ const projects = [
     media: []
   }
 ];
-/* --------------------------------------------------------------------- */
+      //-------------------------------------------------------------------
 
-/* ------------------------------------------------------------ */
-
-
-// ======================================================================
-// 2. GUARD – avoid crashing in non‑DOM test runners (fix for ChromeTransport)
-// ======================================================================
-if (typeof document !== 'undefined') {
-  (function portfolioApp() {
-    'use strict';
-
-    // ---------- Utility -------------------------------------------------
-    const $ = (sel, ctx = document) => ctx.querySelector(sel);
-    const create = (tag, cls, html) => {
-      const el = document.createElement(tag);
-      if (cls)  el.className = cls;
-      if (html) el.innerHTML = html;
-      return el;
-    };
-
-    // ---------- Render Functions ---------------------------------------
-    function renderProjects(filter = 'All') {
-      const grid = $('#projects');
-      grid.innerHTML = '';
-      const list = filter === 'All' ? projects : projects.filter(p => p.category === filter);
-
-      list.forEach(proj => {
-        const card = create('div', 'card');
-        card.style.setProperty('--card-bg', ''); // reset custom prop if any
-
-        card.appendChild(create('h3', '', proj.title));
-
-        // tags
-        if (proj.tags?.length) {
-          const wrap = create('div', 'tags');
-          proj.tags.forEach(t => wrap.appendChild(create('span', 'tag', t)));
-          card.appendChild(wrap);
-        }
-
-        // bullets
-        if (proj.bullets?.length) {
-          const ul = create('ul', 'bullets');
-          proj.bullets.forEach(b => ul.appendChild(create('li', '', b)));
-          card.appendChild(ul);
-        }
-
-        // media thumbnails
-        if (proj.media?.length) {
-          const wrap = create('div', 'media-wrap');
-          proj.media.forEach(m => {
-            const thumb = create('img', 'thumb');
-            thumb.src = m.type === 'pdf'
-              ? 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="80" height="80"%3E%3Crect width="80" height="80" fill="%23f44336"/%3E%3Ctext x="40" y="50" text-anchor="middle" font-size="24" fill="white" font-family="Arial" dy="-4"%3EPDF%3C/text%3E%3C/svg%3E'
-              : m.src;
-            thumb.alt = 'preview';
-            thumb.onclick = () => openModal(m);
-            wrap.appendChild(thumb);
+      /* ========= 3. Render Navbar Buttons ========= */
+      function renderFilterButtons() {
+        const nav = qs("#categoryFilter");
+        const categories = ["All", ...new Set(projects.map((p) => p.category))];
+        categories.forEach((cat, idx) => {
+          const btn = document.createElement("button");
+          btn.textContent = cat || "Uncategorized";
+          if (idx === 0) btn.classList.add("active");
+          btn.addEventListener("click", () => {
+            document.querySelectorAll("nav button").forEach((b) => b.classList.remove("active"));
+            btn.classList.add("active");
+            renderProjects(cat);
           });
-          card.appendChild(wrap);
-        }
-
-        grid.appendChild(card);
-      });
-    }
-
-    function renderFilters() {
-      const nav = $('#categoryFilter');
-      nav.innerHTML = '';
-      const cats = ['All', ...new Set(projects.map(p => p.category))];
-      cats.forEach(cat => {
-        const btn = create('button', cat === 'All' ? 'active' : '', cat);
-        btn.onclick = () => {
-          nav.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          renderProjects(cat);
-        };
-        nav.appendChild(btn);
-      });
-    }
-
-    // ---------- Modal ---------------------------------------
-    function openModal(m) {
-      const modal = $('#modal');
-      const box   = $('#modalContent');
-      box.innerHTML = '';
-      let el;
-      switch (m.type) {
-        case 'image':
-          el = create('img');
-          el.src = m.src;
-          break;
-        case 'video':
-          el = create('video');
-          el.src = m.src;
-          el.controls = true;
-          break;
-        case 'pdf':
-          el = create('iframe');
-          el.src = m.src;
-          break;
+          nav.appendChild(btn);
+        });
       }
-      box.appendChild(el);
-      modal.classList.add('open');
-    }
-    function closeModal() { $('#modal').classList.remove('open'); }
 
-    // attach close btn
-    $('#closeBtn').onclick = closeModal;
-    $('#modal').addEventListener('click', e => { if (e.target.id === 'modal') closeModal(); });
+      /* ========= 4. Render Project Cards ========= */
+      function renderProjects(filter = "All") {
+        const container = qs("#projects");
+        container.innerHTML = "";
+        const list = filter === "All" ? projects : projects.filter((p) => p.category === filter);
+        list.forEach((proj) => {
+          const card = document.createElement("div");
+          card.className = "card";
+          const title = document.createElement("h3");
+          title.textContent = proj.title;
+          card.appendChild(title);
+          if (proj.tags?.length) {
+            const tagsWrap = document.createElement("div");
+            tagsWrap.className = "tags";
+            proj.tags.forEach((t) => {
+              const span = document.createElement("span");
+              span.className = "tag";
+              span.textContent = t;
+              tagsWrap.appendChild(span);
+            });
+            card.appendChild(tagsWrap);
+          }
+          if (proj.bullets?.length) {
+            const ul = document.createElement("ul");
+            ul.className = "bullets";
+            proj.bullets.forEach((b) => {
+              const li = document.createElement("li");
+              li.textContent = b;
+              ul.appendChild(li);
+            });
+            card.appendChild(ul);
+          }
+          if (proj.media?.length) {
+            const wrap = document.createElement("div");
+            wrap.className = "media-wrap";
+            proj.media.forEach((m) => {
+              const img = document.createElement("img");
+              img.className = "thumb";
+              img.src = m.type === "pdf" ? "https://img.icons8.com/fluency/48/pdf.png" : m.src;
+              img.alt = "preview";
+              img.addEventListener("click", () => openModal(m));
+              wrap.appendChild(img);
+            });
+            card.appendChild(wrap);
+          }
+          container.appendChild(card);
+        });
+      }
 
-    // ---------- INIT after DOM ready -----------------------
-    window.addEventListener('DOMContentLoaded', () => {
-      renderFilters();
+      /* ========= 5. Modal preview ========= */
+      function openModal(media) {
+        const modal = qs("#modal");
+        const modalContent = qs("#modalContent");
+        modalContent.innerHTML = "";
+        let element;
+        if (media.type === "image") {
+          element = document.createElement("img");
+          element.src = media.src;
+        } else if (media.type === "video") {
+          element = document.createElement("video");
+          element.src = media.src;
+          element.controls = true;
+        } else if (media.type === "pdf") {
+          element = document.createElement("iframe");
+          element.src = media.src;
+        }
+        modalContent.appendChild(element);
+        modal.classList.add("open");
+      }
+      function closeModal() { qs("#modal").classList.remove("open"); }
+      qs("#closeBtn").addEventListener("click", closeModal);
+      qs("#modal").addEventListener("click", (e) => { if (e.target === qs("#modal")) closeModal(); });
+
+      /* ========= 6. Init ========= */
+      renderFilterButtons();
       renderProjects();
-    });
-
-    // ---------- Simple Runtime Tests -----------------------
-    console.assert(Array.isArray(projects), 'projects should be an array');
-    console.assert(typeof projects[0] === 'object', 'projects[0] should be an object');
-  })();
-}
-
-// ======================================================================
-// 3. EXPORTS for automated tests (Node) – safe no‑ops in browser
-// ======================================================================
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { projects };
-}
-</script>
+    </script>
   </body>
 </html>
