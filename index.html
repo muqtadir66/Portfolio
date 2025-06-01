@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Muq Hussain – Portfolio</title>
+
+    <!--
+      -----------------------------------------------------------------------
+      𝙋𝙤𝙧𝙩𝙛𝙤𝙡𝙞𝙤 𝙎𝙞𝙩𝙚 𝙑𝟐 – bug‑hardened
+      -----------------------------------------------------------------------
+       Safe to import in *any* environment (browser, Node test‑runner, etc.)
+       No external network calls – icons & fonts are local / data‑URIs
+       DOM logic executes *only* when `document` is available (prevents the
+        ChromeTransport / headless launch error seen in sandbox tests).
+       Added basic self‑tests to verify data structure at runtime.
+    -->
+
+    <style>
+      /************ 1. BASE LAYOUT ************/
+      *, *::before, *::after {
+        box-sizing: border-box;
+      }
+      html, body {
+        margin: 0;
+        padding: 0;
+        font-family: "Helvetica Neue", Arial, sans-serif;
+        background: #fafafa;
+        color: #222;
+        line-height: 1.5;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(16px);
+        border-bottom: 1px solid #e0e0e0;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      header h1 {
+        font-size: 1.5rem;
+        letter-spacing: .05rem;
+      }
+      nav { display: flex; gap: 1rem; }
+      nav button {
+        background: none;
+        border: none;
+        padding: .5rem .75rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: background .25s;
+      }
+      nav button.active,
+      nav button:hover { background: #e8f0fe; }
+
+      main {
+        max-width: 1200px;
+        margin: auto;
+        padding: 2rem 2rem 4rem;
+      }
+
+      /************ 2. PROJECT CARDS ************/
+      .projects { display: grid; gap: 2rem; }
+      @media (min-width: 768px) {
+        .projects {
+          grid-template-columns: repeat(auto-fill,minmax(340px,1fr));
+        }
+      }
+      .card {
+        background: var(--card-bg, #fff);
+        border-radius: 20px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 14px rgba(0,0,0,.05);
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        transition: transform .3s, box-shadow .3s;
+      }
+      .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0,0,0,.08);
+      }
+      .card h3 { margin: 0 0 .25rem; font-size: 1.2rem; }
+      .tags { display: flex; flex-wrap: wrap; gap: .5rem; }
+      .tag {
+        background: #f0f7ff;
+        color: #3367d6;
+        padding: .25rem .5rem;
+        border-radius: 999px;
+        font-size: .7rem;
+        letter-spacing: .04rem;
+      }
+      ul.bullets {
+        padding-left: 1.25rem;
+        list-style: disc;
+        display: flex;
+        flex-direction: column;
+        gap: .25rem;
+      }
+
+      /************ 3. MEDIA THUMBNAILS ************/
+      .media-wrap { display: flex; gap: .5rem; overflow-x: auto; }
+      .thumb {
+        width: 80px; height: 80px;
+        border-radius: 12px;
+        object-fit: cover;
+        flex-shrink: 0;
+        cursor: pointer;
+      }
+
+      /************ 4. MODAL ************/
+      .modal {
+        position: fixed; inset: 0;
+        background: rgba(0,0,0,.6);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+      }
+      .modal.open { display: flex; }
+      .modal-content {
+        max-width: 90vw; max-height: 90vh;
+        background: #fff;
+        border-radius: 16px;
+        overflow: hidden;
+        position: relative;
+      }
+      .modal-content iframe,
+      .modal-content img,
+      .modal-content video { width: 100%; height: 100%; }
+      .close-btn {
+        position: absolute; top: .5rem; right: .5rem;
+        width: 32px; height: 32px; border-radius: 50%;
+        border: none; cursor: pointer; color: #fff;
+        background: rgba(0,0,0,.6);
+        font-size: 1.2rem;
+      }
+
+      /************ 5. PASTEL PALETTE ************/
+      :root {
+        --pastel-blue:   #d7e8ff;
+        --pastel-pink:   #fce2e8;
+        --pastel-yellow: #fff9d6;
+        --pastel-green:  #dff7e9;
+      }
+      /* clever CSS trick: nth-child background */
+      .card:nth-child(4n+1) { background: var(--pastel-blue);   }
+      .card:nth-child(4n+2) { background: var(--pastel-pink);   }
+      .card:nth-child(4n+3) { background: var(--pastel-yellow); }
+      .card:nth-child(4n+4) { background: var(--pastel-green);  }
+
+      /************ 6. SCROLLBAR ************/
+      ::-webkit-scrollbar { width: 8px; height: 8px; }
+      ::-webkit-scrollbar-thumb { background: #c5c5c5; border-radius: 8px; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Muq Hussain</h1>
+      <nav id="categoryFilter"></nav>
+    </header>
+
+    <main>
+      <section class="projects" id="projects"></section>
+    </main>
+
+    <!-- MODAL -->
+    <div class="modal" id="modal">
+      <div class="modal-content" id="modalContent"></div>
+      <button class="close-btn" id="closeBtn">×</button>
+    </div>
+
+<script>
+// ======================================================================
+// 1. DATA MODEL (edit this array to add projects)
+// ======================================================================
+/* paste this array into index.html  --------------------------- */
+/* paste into index.html ------------------------------------------------ */
+const projects = [
+  {
+    title: "PID-Controlled Thermoelectric Oven/Cooler",
+    category: "Embedded Systems & Controls",
+    tags: ["MSP430", "C", "PID", "PWM", "MATLAB", "TEC"],
+    bullets: [
+      " Designed and implemented a closed-loop PID temperature control system using a Texas Instruments MSP430 microcontroller and a thermoelectric cooler (TEC) based on the Peltier effect.",
+      " Programmed real-time control logic in C, integrating ADC input from an NTC thermistor and generating PWM signals to modulate TEC output.",
+      " Developed a MATLAB GUI for serial communication over UART, enabling live temperature plotting, setpoint input, and data logging.",
+      " Applied PID tuning (Ziegler-Nichols method) and implemented anti-windup strategies, integral error clamping, and derivative smoothing through custom filtering.",
+      " Built complete firmware and hardware architecture; validated system response through simulated loop control despite serial communication limitations in the final prototype."
+    ],
+    media: []
+  },
+  {
+    title: "Forefinger-Thumb Prosthetic Design",
+    category: "Mechanical & CAD Design",
+    tags: ["Prosthetics", "Autodesk Inventor", "Gear Train", "3D-Printing", "Dynamics"],
+    bullets: [
+      " Designed and prototyped a functional prosthetic gripping mechanism in a 4-person team, driven by a custom-designed gear train using an assigned 21 RPM input motor to achieve 0.20 RPS opposing rotational motion in finger and thumb joints.",
+      " Modeled parts and full assembly in Autodesk Inventor, applying constraints and running dynamic simulations to validate contact motion within a 30×30 mm workspace.",
+      " Created complete engineering drawing package including ANSI-standard working drawings, assembly diagrams, and bill of materials for 3D-printed components.",
+      " Produced and demonstrated a fully assembled 3D-printed prototype, verified through motion testing and oral technical defense."
+    ],
+    media: []
+  },
+  {
+    title: "Ultrasonic Range Finder – Modular Distance Measurement System",
+    category: "Electronics & Instrumentation",
+    tags: ["Ultrasonic", "555 Timer", "Multisim", "Analog", "Digital Logic"],
+    bullets: [
+      " Designed and constructed a 4-module ultrasonic rangefinder using piezoelectric transceivers, analog amplification, digital logic, and 7-segment display systems, targeting centimeter-scale distance readings from 10–99 cm.",
+      " Generated and processed high-frequency acoustic pulses using astable 555 timers (40 kHz & 1 Hz), SR latch logic, and comparator-based waveform digitization.",
+      " Simulated circuit modules in Multisim, analyzed signal propagation and timing, and performed iterative refinement using oscilloscopes and breadboards.",
+      " Integrated op-amp stages for signal conditioning and applied BCD counters with 7-segment decoders for real-time digital display output.",
+      " Developed a full technical report (5-week rolling submission) with circuit schematics, timing diagrams, simulation results, uncertainty analysis, and lessons learned.",
+      " Project followed a top-down design approach and emphasized system integration of analog and digital electronics without the use of microcontrollers."
+    ],
+    media: []
+  },
+  {
+    title: "Nuclear Laboratory Series – McMaster Nuclear Reactor",
+    category: "Nuclear Science & Engineering",
+    tags: ["HPGe", "NaI(Tl)", "BF₃", "Activation", "Radiography"],
+    bullets: [
+      " Conducted four reactor-based experiments involving radiation detection, isotope identification, and neutron-material interactions, using HPGe, NaI(Tl), and BF₃/He-3 detectors.",
+      " Modeled radioactive decay curves from neutron-activated samples; computed decay constants and half-lives with full uncertainty analysis, confirming isotope identity as ³⁸Cl.",
+      " Measured neutron attenuation through various materials; calculated macroscopic cross-sections via semi-log regression, analyzing scattering effects and validating models.",
+      " Captured high-resolution neutron radiographs of internal components using thermal beams; analyzed image contrast and L/D ratio using ASTM E545 standards and ImageJ.",
+      " Demonstrated applications in non-destructive testing, shielding analysis, and fuel inspection through experimental interpretation and technical reporting."
+    ],
+    media: []
+  },
+  {
+    title: "Optical Systems and Imaging Labs – ENGPHYS 3E04",
+    category: "Optics & Photonics",
+    tags: ["Zemax", "Lens Design", "Gas Sensor", "OCT", "MATLAB"],
+    bullets: [
+      " Designed and optimized a singlet camera lens using Zemax OpticStudio; minimized RMS spot size and corrected monochromatic aberrations through curvature, thickness, and material optimization.",
+      " Simulated an absorption-based optical gas sensor to detect greenhouse gases; modeled multi-pass Herriott cell configurations and evaluated spectral absorption in MATLAB.",
+      " Modeled a non-sequential Optical Coherence Tomography (OCT) system for retina imaging; analyzed interference fringe patterns, coherence length, and axial resolution to assess imaging fidelity."
+    ],
+    media: []
+  },
+  {
+    title: "Sensor Instrumentation & IoT Systems – ENGPHYS 3L04",
+    category: "Embedded Systems & Controls",
+    tags: ["Arduino", "Transducers", "Hall", "Smart Systems", "IOT", "Adafruit Cloud"],
+    bullets: [
+      " Characterized analog and digital sensors including Hall effect, thermistors, thermocouples, phototransistors, and IR reflectivity sensors; extracted signal behavior using real-time data acquisition and curve fitting in Arduino and MATLAB.",
+      " Evaluated human-machine interface devices (rotary encoders, joysticks) and pulse sensors (KY-039) for physiological monitoring; implemented analog filtering and noise mitigation to compute BPM accurately.",
+      " Designed Auto Gard, a smart Arduino-based IoT garden system integrating soil moisture, pH, temperature, humidity, and light sensors with wireless communication (ESP8266); enabled real-time plant environment monitoring and automated response logic.",
+      " Programmed control logic and interfaced with Adafruit IoT cloud platform for remote logging, environmental threshold triggers, and user alerts."
+    ],
+    media: []
+  },
+  {
+    title: "Semiconductor Device Characterization Labs",
+    category: "Semiconductor Devices & Fabrication",
+    tags: ["Photodetector", "Solar Cell", "Bandgap", "Hall Effect", "I–V"],
+    bullets: [
+      " Measured and analyzed key device parameters for photodetectors, LEDs, and solar cells through hands-on experiments using calibrated optics and electrical instrumentation.",
+      " Determined the bandgap of GaP using spectral filtering and photodetector response curves; validated results against theoretical absorption edges.",
+      " Calculated carrier lifetime and base transit times in phototransistors by analyzing LED-driven transient waveforms on an oscilloscope; extracted recombination dynamics.",
+      " Investigated Hall sensor response to rotating magnetic fields, confirming voltage polarity and amplifier gain behavior under field orientation changes.",
+      " Evaluated I–V characteristics of silicon solar cells under red and white LED illumination; quantified performance metrics including fill factor and relative efficiency, and identified limitations in parallel cell configurations."
+    ],
+    media: []
+  },
+  {
+    title: "Biophotonics Literature Project – DO-SRS Imaging of Aging Metabolism (ENGPHYS 4I03)",
+    category: "Optics & Photonics",
+    tags: ["DO-SRS", "Raman", "Metabolism", "Spectroscopy"],
+    bullets: [
+      " Researched and presented on Deuterium Oxide–Probed Stimulated Raman Scattering (DO-SRS) as a non-invasive imaging technique for visualizing metabolic changes in aging fruit flies (Drosophila).",
+      " Evaluated the optical principles of Raman scattering, laser-sample interaction, and vibrational spectroscopy used to monitor lipid and protein turnover in biological tissues.",
+      " Analyzed the benefits of DO-SRS for label-free imaging and its potential for integration with multimodal microscopy platforms in biomedical research.",
+      " Assessed the system’s limitations (signal-to-noise ratio, imaging depth, photobleaching) and proposed engineering solutions including optical design refinements and hybrid imaging strategies.",
+      " Co-authored a full-length technical report and co-presented findings via video presentation and Q&A session."
+    ],
+    media: []
+  },
+  {
+    title: "Marketing Strategy Consulting Project – OneZo Tapioca Hamilton",
+    category: "Business & Consulting",
+    tags: ["Marketing Audit", "Competitive Analysis", "ROI", "Strategy"],
+    bullets: [
+      " Conducted a full-cycle marketing audit and competitive analysis for a real-world client in the food and beverage sector, focusing on pricing, promotions, delivery strategy, and customer segmentation.",
+      " Identified marketing challenges including low profitability from promotions, limited digital presence, and operational inefficiencies; used data-driven methods to assess root causes.",
+      " Proposed and justified a dual-strategy solution involving an incremental volume discount model and Uber Eats digital ad optimization, supported by ROI calculations and a decision matrix.",
+      " Created a phased implementation roadmap that included staff training, budget reallocation, and customer communication strategy to increase revenue while maintaining marketing costs.",
+      " Delivered both interim and final presentations to stakeholders and submitted a 35+ page marketing plan supported by market trend data, segmentation analysis, and financial impact projections."
+    ],
+    media: []
+  },
+  {
+    title: "Innovation Consulting & Product Development – Assemblr App",
+    category: "Business & Consulting",
+    tags: ["Flutter", "Node.js", "MongoDB", "Stripe", "Matchmaking"],
+    bullets: [
+      " Co-developed Assemblr, a data-driven mobile platform enabling personalized matchmaking for in-person and virtual social events, addressing challenges in community-building and niche event discovery.",
+      " Conducted full-cycle business innovation analysis including opportunity identification, market segmentation, IP and competitor analysis, and strategic value proposition refinement for a dual-sided platform (users and businesses).",
+      " Led technical feasibility and system architecture planning for a custom-built mobile app using Flutter (frontend), JavaScript/Node.js (backend), and MongoDB, integrating OAuth authentication and Stripe payment gateways.",
+      " Designed a proprietary event matchmaking algorithm based on user preferences, availability, and behavioral data to optimize social compatibility and event recommendations.",
+      " Produced financial projections with an NPV of $13.71M and expected year-5 income of $2.5M; created a full investor pitch including MVP scope, risk assessment, sprint-based agile development plan, and business model canvas.",
+      " Delivered a final business proposal and feasibility study aimed at securing $80,000 in seed funding for a 5% equity stake."
+    ],
+    media: []
+  },
+  {
+    title: "CubeSat Mission Design & Systems Engineering (ENGPHYS 3SP3)",
+    category: "Systems Engineering",
+    tags: ["CubeSat", "Systems Eng.", "Orbital Mech.", "Trade Study"],
+    bullets: [
+      " Applied the systems engineering lifecycle to develop a conceptual CubeSat mission (MCSPI) aimed at real-time parking surveillance using satellite imaging.",
+      " Defined high-level mission and system requirements, operational concepts, and interface design for imaging, data relay, and ticketing systems based on stakeholder needs and functional constraints (budget < $100k, 5-year mission lifetime).",
+      " Modeled orbital mechanics and pass scheduling to optimize imaging coverage of multiple urban campuses; proposed autonomous AI-based infraction detection and communication architecture.",
+      " Completed subsystem trade studies across power, propulsion, communications, and control systems to evaluate feasibility and justify design decisions.",
+      " Demonstrated multidisciplinary integration by designing a full mission timeline, requirements traceability matrix, and spacecraft data flow from LEO downlink to enforcement action."
+    ],
+    media: []
+  },
+  {
+    title: "Analog and Digital Signal Processing Labs",
+    category: "Signal Processing & Communications",
+    tags: ["MATLAB", "Convolution", "Fourier", "Filtering"],
+    bullets: [
+      " Implemented signal modeling and transformation techniques in MATLAB, including Heaviside step, ramp, and rectangular functions to simulate prime rate trends and periodic pulse trains.",
+      " Applied convolution and deconvolution methods to analyze real-world sensor behavior; simulated a thermistor’s temperature response and reconstructed the actual signal using backward Euler discretization.",
+      " Evaluated frequency-domain approximations using harmonics to represent pulse trains and studied limitations of phase misalignment, reinforcing concepts behind Fourier series signal synthesis.",
+      " Demonstrated understanding of system impulse responses, filtering, and measurement error modeling through visual data analysis and iterative signal correction."
+    ],
+    media: []
+  },
+  {
+    title: "Fluid Mechanics and Heat Transfer Laboratory Projects (ENGPHYS 3O04)",
+    category: "Fluid & Thermal Analysis",
+    tags: ["ANSYS Fluent", "CFX", "Venturi", "Heat Exchanger", "Reynolds"],
+    bullets: [
+      " Conducted experimental and simulation-based analysis of internal and external flow systems, including Venturi tubes, pipe networks, and bluff body drag, applying Bernoulli’s principle, Darcy-Weisbach equation, and dimensional analysis.",
+      " Used ANSYS Fluent and ANSYS CFX to simulate laminar and turbulent flow regimes; validated mesh sensitivity and turbulence models against physical measurements from lab setups.",
+      " Modeled pressure distribution and velocity profiles in pipe systems under varying Reynolds numbers; compared simulation results with experimental manometer readings and derived friction factor plots.",
+      " Investigated forced convection and heat exchanger performance; implemented energy balance equations to calculate heat transfer coefficients and effectiveness of parallel and counterflow exchangers.",
+      " Simulated transient and steady-state conduction scenarios in composite materials using ANSYS to visualize temperature gradients and thermal flux, correlating with analytical and empirical results.",
+      " Authored detailed engineering reports including uncertainty analysis, data regression (linearized heat loss models), and interpretation of non-ideal flow effects in real-world systems."
+    ],
+    media: []
+  },
+  {
+    title: "Monte Carlo Reactor Simulation – Fuel Bundle Optimization for CANDU Reactors (ENGPHYS 4NE3)",
+    category: "Nuclear Science & Engineering",
+    tags: ["MCNP", "CANDU", "Fuel Bundle", "Thorium", "MOX"],
+    bullets: [
+      " Simulated neutron transport and energy deposition in CANDU bundles using MCNP, analyzing performance of natural uranium, enriched uranium, MOX, and thorium fuels.",
+      " Demonstrated a significant power output increase using enriched uranium and MOX fuels over natural uranium, while maintaining flux symmetry and core stability.",
+      " Identified the outer-ring thorium configuration as optimal, delivering the most uniform radial power distribution due to U-233 breeding and peripheral neutron absorption.",
+      " Quantified fission power density and energy deposition using MCNP tally cards; results used to assess thermal performance, flux peaking factors, and bundle viability.",
+      " Delivered detailed technical recommendations on bundle geometry and material use for enhancing CANDU reactor efficiency in a formal report and oral defense."
+    ],
+    media: []
+  },
+  {
+    title: "Nuclear Reactor Operation & Simulation – CANDU-9 Systems (ENGPHYS 4P03)",
+    category: "Nuclear Science & Engineering",
+    tags: ["CANDU Sim.", "Xenon Transient", "Point-Kinetics", "Control Rods"],
+    bullets: [
+      " Operated a CANDU-9 reactor simulator to perform full-cycle startup, shutdown, and transient operations including power maneuvers, poison override, and turbine trips.",
+      " Simulated xenon transients using self-developed MATLAB models; predicted 135^{135}135Xe concentration and reactivity impacts during power changes and recovery scenarios.",
+      " Analyzed and validated core behavior under abnormal conditions (e.g., step-back, coolant loss, shutdown system actuation) by integrating feedback control mechanisms and reactivity limits.",
+      " Modeled neutron kinetics and reactivity feedback effects using point-kinetics equations with delayed neutron precursors; evaluated control rod insertion strategies under changing flux.",
+      " Final project involved full simulation of xenon buildup/burnout cycles and their influence on long-term reactivity margins and plant stability under varied load demands."
+    ],
+    media: []
+  },
+  {
+    title: "AI-Based Lead Conversion System Design – Industry Consulting Project",
+    category: "Capstone Projects",
+    tags: ["NLP", "Voice Agent", "CRM", "KPIs", "System Arch."],
+    bullets: [
+      " Engineered an AI-driven autonomous client engagement system to resolve lead qualification and conversion inefficiencies for enterprise software firm SOTI, integrating business process mapping with NLP-capable virtual agents.",
+      " Applied systems engineering principles to model input/output workflows for sales funnel automation; designed technical process flowcharts for inbound validation, triage, and outbound engagement.",
+      " Conducted data-driven performance modeling using historical lead datasets to define qualification thresholds, interaction logic, and routing protocols for decision-tree–based voice agents.",
+      " Developed a phased implementation plan including a $10k cost model, performance KPIs, risk analysis (risk register + mitigation), and API integration scope for CRM and telephony platforms.",
+      " Delivered full-system architecture documentation, comparative evaluation of two solution frameworks using weighted scoring matrices, and a stakeholder-aligned deployment timeline.",
+      " Presented technical recommendations and final solution strategy to industry executives; submitted a formalized client report detailing design decisions, cost-benefit analysis, and ROI projection."
+    ],
+    media: []
+  },
+  {
+    title: "Silicon Solar Cell Fabrication & Characterization (ENGPHYS 4Z04)",
+    category: "Semiconductor Devices & Fabrication",
+    tags: ["PERL", "Cleanroom", "KOH Etch", "Photolithography", "I–V"],
+    bullets: [
+      " Fabricated a Passivated Emitter and Rear Locally Diffused (PERL) silicon solar cell in a cleanroom environment, executing full photolithography, doping, etching, and metallization processes on p-type wafers.",
+      " Developed inverted pyramid texturing via anisotropic KOH etching and spin-coated phosphorus dopant (P509) followed by a high-temperature drive-in to form selective emitter regions.",
+      " Tuned SiO₂ anti-reflective coating to optimal quarter-wavelength thickness (≈84 nm) using iterative HF etching guided by optical modeling.",
+      " Patterned and sputtered front Ti/Ag contacts and full-area Al BSF rear contact using lift-off and sonication, minimizing edge recombination and improving carrier collection.",
+      " Characterized device performance under AM1.5G illumination and dark conditions, extracting VOC, ISC, FF, η, Rs, and Rsh from I–V curves and comparing with reference cells.",
+      " Achieved peak efficiency of 0.70% in best-performing cell; quantified contact resistance (ρc ≈ 0.34 Ω·cm²) from resistance vs. pad spacing analysis using linear extrapolation."
+    ],
+    media: []
+  },
+  {
+    title: "TCAD Simulation of Silicon Solar Cell Using Sentaurus (ENGPHYS 4Z04)",
+    category: "Semiconductor Devices & Fabrication",
+    tags: ["Sentaurus", "TCAD", "Drift-Diffusion", "EQE", "Optimization"],
+    bullets: [
+      " Designed and simulated a full 3D silicon solar cell structure in Sentaurus Workbench, modeling layer growth, dopant diffusion, oxide formation, and metal contact definition.",
+      " Implemented phosphorus diffusion and junction formation via Fermi-Dirac statistics and Gaussian ion profiles to replicate lab-fabricated device architecture.",
+      " Applied optical generation profiles using TMM modeling for AM1.5G illumination; solved coupled Poisson and drift-diffusion equations with recombination (SRH, Auger) and mobility models.",
+      " Generated I–V and external quantum efficiency (EQE) curves to assess device output; achieved simulated VOC ≈ 0.37 V and efficiency ≈ 9.5%, identifying recombination losses near the front junction.",
+      " Evaluated electric field, carrier lifetime, and generation maps in spatially resolved outputs to isolate limitations in contact design and surface passivation strategies.",
+      " Demonstrated capability to use TCAD for device optimization, proposing modifications to improve fill factor and reduce front contact shading losses."
+    ],
+    media: []
+  },
+  {
+    title: "Autonomous Blackjack-Dealing System – Engineering Physics Capstone Project (ENGPHYS 4A06A)",
+    category: "Capstone Projects",
+    tags: ["Raspberry Pi", "OpenCV", "Python", "Mechatronics", "AI Dealer"],
+    bullets: [
+      " Engineered a fully autonomous Blackjack dealer integrating mechanical actuation, computer vision, and game logic control to simulate human-like card dealing and gameplay interaction.",
+      " Designed and built a mechanical card dispensing system using precision-aligned roller pairs driven by DC motors, achieving reliable single-card separation and directional ejection with feedback tuning to minimize jamming and misfeeds.",
+      " Developed a Python-based computer vision module using OpenCV to recognize user hand gestures (e.g., “Hit”, “Stand”) with real-time video input, achieving robust classification under varied lighting and background conditions.",
+      " Programmed an AI dealer algorithm in Python to handle dynamic deck reshuffling, betting logic, and real-time decision-making, interfaced with gesture recognition and mechanical dispensing systems.",
+      " Integrated all subsystems on a Raspberry Pi microcontroller platform, establishing synchronized control across hardware (motors, camera), software (game state logic), and user interface layers.",
+      " Conducted performance testing and system tuning to ensure reliable game flow and human interaction, refining grip materials and motor control parameters to prevent stalling and double feeding.",
+      " Delivered full technical documentation and demonstration; showcased the system at the final project expo, highlighting cross-disciplinary integration of mechatronics, embedded systems, and AI-driven interaction."
+    ],
+    media: []
+  },
+  {
+    title: "Photonic Device Theory & Analysis – Assignments (ENGPHYS 3PD4)",
+    category: "Optics & Photonics",
+    tags: ["Waveguides", "Couplers", "Dispersion", "Quantum Well"],
+    bullets: [
+      " Solved design problems involving ridge, slab, and fiber waveguides, calculating effective refractive indices, V-numbers, and confinement factors.",
+      " Derived phase-matching conditions and beat lengths for directional couplers; computed coupling efficiencies using overlap integrals.",
+      " Modeled group velocity dispersion and bandwidth limitations in Mach–Zehnder modulators and ring resonators.",
+      " Analyzed quantum well laser emission and threshold current using energy bandgap, carrier recombination, and confinement models."
+    ],
+    media: []
+  },
+  {
+    title: "Integrated Photonics Laboratory – Silicon Device Characterization (ENGPHYS 3PD4)",
+    category: "Optics & Photonics",
+    tags: ["Silicon Photonics", "Ring Resonator", "PDL", "Probe Station"],
+    bullets: [
+      " Used a fiber-optic probe station and tunable laser source to characterize silicon photonic devices across multiple lab modules.",
+      " Measured polarization-dependent loss (PDL) and insertion loss in directional couplers; extracted coupling ratios and confirmed symmetry.",
+      " Characterized spectral filtering and free spectral range (FSR) of ring resonators; validated results using MATLAB peak detection and curve fitting.",
+      " Evaluated waveguide-coupled photodetector behavior under modulated signals and extracted electrical response characteristics."
+    ],
+    media: []
+  },
+  {
+    title: "Final Project – Optical Inter-Satellite Communication System (ENGPHYS 3PD4)",
+    category: "Optics & Photonics",
+    tags: ["Grating Coupler", "RSoft", "BeamPROP", "Gaussian Beam", "ISOC"],
+    bullets: [
+      " Designed a planar silicon grating coupler for space-based optical links; simulated input coupling efficiency (η₁) using RSoft FemSIM and BeamPROP.",
+      " Modeled output beam divergence and receiving aperture overlap efficiency (η₂) using MATLAB-based Gaussian beam propagation and overlap integrals.",
+      " Achieved total system efficiency η ≈ 45% through angular optimization, taper design, and Gaussian matching.",
+      " Presented full design architecture, simulation results, and improvement strategies in a technical final report and presentation."
+    ],
+    media: []
+  }
+];
+/* --------------------------------------------------------------------- */
+
+/* ------------------------------------------------------------ */
+
+
+// ======================================================================
+// 2. GUARD – avoid crashing in non‑DOM test runners (fix for ChromeTransport)
+// ======================================================================
+if (typeof document !== 'undefined') {
+  (function portfolioApp() {
+    'use strict';
+
+    // ---------- Utility -------------------------------------------------
+    const $ = (sel, ctx = document) => ctx.querySelector(sel);
+    const create = (tag, cls, html) => {
+      const el = document.createElement(tag);
+      if (cls)  el.className = cls;
+      if (html) el.innerHTML = html;
+      return el;
+    };
+
+    // ---------- Render Functions ---------------------------------------
+    function renderProjects(filter = 'All') {
+      const grid = $('#projects');
+      grid.innerHTML = '';
+      const list = filter === 'All' ? projects : projects.filter(p => p.category === filter);
+
+      list.forEach(proj => {
+        const card = create('div', 'card');
+        card.style.setProperty('--card-bg', ''); // reset custom prop if any
+
+        card.appendChild(create('h3', '', proj.title));
+
+        // tags
+        if (proj.tags?.length) {
+          const wrap = create('div', 'tags');
+          proj.tags.forEach(t => wrap.appendChild(create('span', 'tag', t)));
+          card.appendChild(wrap);
+        }
+
+        // bullets
+        if (proj.bullets?.length) {
+          const ul = create('ul', 'bullets');
+          proj.bullets.forEach(b => ul.appendChild(create('li', '', b)));
+          card.appendChild(ul);
+        }
+
+        // media thumbnails
+        if (proj.media?.length) {
+          const wrap = create('div', 'media-wrap');
+          proj.media.forEach(m => {
+            const thumb = create('img', 'thumb');
+            thumb.src = m.type === 'pdf'
+              ? 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="80" height="80"%3E%3Crect width="80" height="80" fill="%23f44336"/%3E%3Ctext x="40" y="50" text-anchor="middle" font-size="24" fill="white" font-family="Arial" dy="-4"%3EPDF%3C/text%3E%3C/svg%3E'
+              : m.src;
+            thumb.alt = 'preview';
+            thumb.onclick = () => openModal(m);
+            wrap.appendChild(thumb);
+          });
+          card.appendChild(wrap);
+        }
+
+        grid.appendChild(card);
+      });
+    }
+
+    function renderFilters() {
+      const nav = $('#categoryFilter');
+      nav.innerHTML = '';
+      const cats = ['All', ...new Set(projects.map(p => p.category))];
+      cats.forEach(cat => {
+        const btn = create('button', cat === 'All' ? 'active' : '', cat);
+        btn.onclick = () => {
+          nav.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          renderProjects(cat);
+        };
+        nav.appendChild(btn);
+      });
+    }
+
+    // ---------- Modal ---------------------------------------
+    function openModal(m) {
+      const modal = $('#modal');
+      const box   = $('#modalContent');
+      box.innerHTML = '';
+      let el;
+      switch (m.type) {
+        case 'image':
+          el = create('img');
+          el.src = m.src;
+          break;
+        case 'video':
+          el = create('video');
+          el.src = m.src;
+          el.controls = true;
+          break;
+        case 'pdf':
+          el = create('iframe');
+          el.src = m.src;
+          break;
+      }
+      box.appendChild(el);
+      modal.classList.add('open');
+    }
+    function closeModal() { $('#modal').classList.remove('open'); }
+
+    // attach close btn
+    $('#closeBtn').onclick = closeModal;
+    $('#modal').addEventListener('click', e => { if (e.target.id === 'modal') closeModal(); });
+
+    // ---------- INIT after DOM ready -----------------------
+    window.addEventListener('DOMContentLoaded', () => {
+      renderFilters();
+      renderProjects();
+    });
+
+    // ---------- Simple Runtime Tests -----------------------
+    console.assert(Array.isArray(projects), 'projects should be an array');
+    console.assert(typeof projects[0] === 'object', 'projects[0] should be an object');
+  })();
+}
+
+// ======================================================================
+// 3. EXPORTS for automated tests (Node) – safe no‑ops in browser
+// ======================================================================
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { projects };
+}
+</script>
+  </body>
+</html>
