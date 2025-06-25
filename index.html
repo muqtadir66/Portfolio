@@ -648,7 +648,8 @@
 
         function renderMediaItem() {
             modalContent.innerHTML = "";
-            modalContent.className = 'flex-1 min-h-0'; // Reset classes
+            // Reset modalContent classes for every render
+            modalContent.className = 'flex-1 min-h-0';
             const item = currentMediaArray[currentMediaIndex];
             if (!item) return;
 
@@ -658,6 +659,7 @@
                 iframe.className = "w-full h-full border-none";
                 modalContent.appendChild(iframe);
             } else if (item.type === "image" || item.type === "img") {
+                // Add flex centering classes ONLY for images/videos
                 modalContent.classList.add('flex', 'items-center', 'justify-center');
                 const img = document.createElement("img");
                 img.src = item.src;
@@ -666,6 +668,7 @@
                 img.onerror = () => { modalContent.innerHTML = `<p class="p-4 text-center text-red-500">Could not load image: ${item.src}</p>`; };
                 modalContent.appendChild(img);
             } else if (item.type === "video") {
+                 // Add flex centering classes ONLY for images/videos
                 modalContent.classList.add('flex', 'items-center', 'justify-center');
                 const video = document.createElement("video");
                 video.src = item.src;
