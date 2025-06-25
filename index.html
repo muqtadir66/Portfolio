@@ -648,11 +648,11 @@
             if (!item) return;
             let element;
             if (item.type === "pdf") {
-                element = document.createElement("embed");
+                // *** FIX: Use <iframe> instead of <embed> for better mobile compatibility ***
+                element = document.createElement("iframe");
                 element.src = item.src;
-                element.innerHTML = `<p class="p-4 text-center text-medium-text">Cannot display PDF. <a href="${item.src}" target="_blank" class="text-custom-blue hover:underline">Download PDF</a>.</p>`;
-                element.type = "application/pdf";
                 element.className = "w-full h-full min-h-[80vh]";
+                element.title = item.name || "PDF Viewer";
             } else if (item.type === "image" || item.type === "img") {
                 element = document.createElement("img");
                 element.src = item.src;
