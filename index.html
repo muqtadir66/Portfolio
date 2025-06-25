@@ -53,10 +53,6 @@
         main { flex-grow: 1; }
         .ai-content-area { margin-top: 1rem; padding: 0.75rem; background-color: #f0e6ff; border-left: 4px solid #6d28d9; border-radius: 4px; font-size: 0.875rem; color: #3730a3; }
         .ai-content-area p { margin-bottom: 0.5rem; }
-        /* *** FIX: Ensure smooth, native-like scrolling for PDF modal on mobile *** */
-        #modalContent {
-          -webkit-overflow-scrolling: touch;
-        }
     </style>
 </head>
 
@@ -195,7 +191,8 @@
     </button>
 
     <div class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[2000] p-4 hidden" id="mediaModal">
-        <div class="bg-white rounded-lg shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col relative overflow-hidden">
+        <!-- *** FIX: Changed max-h-[90vh] to h-[90vh] to provide a stable height for the iframe on mobile *** -->
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-3xl h-[90vh] flex flex-col relative overflow-hidden">
             <button class="absolute top-3 right-3 text-gray-300 bg-black/50 hover:bg-black/75 p-2 rounded-full z-10 transition-colors" onclick="closeMediaModal()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16"><path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/></svg></button>
             <div class="flex-grow overflow-auto p-1" id="modalContent"></div>
             <div class="absolute top-1/2 left-2 -translate-y-1/2 modal-nav text-white bg-black/40 hover:bg-black/60 p-2 rounded-full cursor-pointer transition-colors" onclick="prevMedia()"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/></svg></div>
@@ -654,7 +651,6 @@
             if (item.type === "pdf") {
                 element = document.createElement("iframe");
                 element.src = item.src;
-                // *** FIX: Use simple w-full and h-full. Let the parent handle scrolling. ***
                 element.className = "w-full h-full";
                 element.title = item.name || "PDF Viewer";
             } else if (item.type === "image" || item.type === "img") {
