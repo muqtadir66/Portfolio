@@ -189,15 +189,24 @@
     <button id="backToTopBtn" class="fixed bottom-5 right-5 bg-custom-blue text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition-all duration-300 opacity-0 translate-y-10">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-up-short" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z"/></svg>
     </button>
-
-    <div class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[2000] p-4 hidden" id="mediaModal">
-        <!-- *** FIX: Changed max-h-[90vh] to h-[90vh] to provide a stable height for the iframe on mobile *** -->
-        <div class="bg-white rounded-lg shadow-2xl w-full max-w-3xl h-[90vh] flex flex-col relative overflow-hidden">
-            <button class="absolute top-3 right-3 text-gray-300 bg-black/50 hover:bg-black/75 p-2 rounded-full z-10 transition-colors" onclick="closeMediaModal()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16"><path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/></svg></button>
-            <div class="flex-grow overflow-auto p-1" id="modalContent"></div>
-            <div class="absolute top-1/2 left-2 -translate-y-1/2 modal-nav text-white bg-black/40 hover:bg-black/60 p-2 rounded-full cursor-pointer transition-colors" onclick="prevMedia()"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/></svg></div>
-            <div class="absolute top-1/2 right-2 -translate-y-1/2 modal-nav text-white bg-black/40 hover:bg-black/60 p-2 rounded-full cursor-pointer transition-colors" onclick="nextMedia()"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/></svg></div>
+    
+    <!-- =================  DYNAMIC MEDIA MODAL (REBUILT)  ================ -->
+    <div class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[2000] p-4 hidden" id="mediaModal" onclick="closeMediaModal(event)">
+        <!-- Modal container. JS will add specific layout classes here. -->
+        <div id="modalContainer" class="relative">
+             <!-- Content will be injected by JS -->
         </div>
+
+        <!-- Static controls, positioned relative to the viewport -->
+        <button class="absolute top-3 right-3 text-gray-300 bg-black/50 hover:bg-black/75 p-2 rounded-full z-10 transition-colors" onclick="closeMediaModal(null, true)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16"><path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/></svg>
+        </button>
+        <button class="modal-nav absolute top-1/2 left-2 -translate-y-1/2 text-white bg-black/40 hover:bg-black/60 p-2 rounded-full cursor-pointer transition-colors" onclick="prevMedia()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/></svg>
+        </button>
+        <button class="modal-nav absolute top-1/2 right-2 -translate-y-1/2 text-white bg-black/40 hover:bg-black/60 p-2 rounded-full cursor-pointer transition-colors" onclick="nextMedia()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/></svg>
+        </button>
     </div>
 
     <div class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[2000] p-4 hidden" id="resumeModal">
@@ -208,9 +217,29 @@
     </div>
 
     <script>
+        // --- UTILITY FUNCTIONS ---
         const qs = (sel) => document.querySelector(sel);
         const qsa = (sel) => document.querySelectorAll(sel);
+        
+        // --- DOM ELEMENT DECLARATIONS ---
+        const landing = qs("#landing");
+        const enterBtn = qs("#enterBtn");
+        const mainNavButtons = qsa("#mainNav button");
+        const pages = qsa(".page");
+        const resumeBtn = qs("#resumeBtn");
+        const resumeModal = qs("#resumeModal");
+        const categoryFilterContainer = qs("#categoryFilter");
+        const projectsGrid = qs("#projectsGrid");
+        const backToTopBtn = qs("#backToTopBtn");
+        const canvas = qs('#landingCanvas');
+        const mediaModal = qs("#mediaModal");
+        const modalContainer = qs("#modalContainer");
+        const ctx = canvas.getContext('2d');
 
+        // --- STATE VARIABLES ---
+        let particlesArray;
+        let currentMediaIndex = 0;
+        let currentMediaArray = [];
         const projects = [
             {
                 title: "Autonomous Blackjack-Dealing System – Engineering Physics Capstone Project",
@@ -390,41 +419,19 @@
             },
         ];
 
-        const landing = qs("#landing");
-        const enterBtn = qs("#enterBtn");
-        const mainNavButtons = qsa("#mainNav button");
-        const pages = qsa(".page");
-        const resumeBtn = qs("#resumeBtn");
-        const resumeModal = qs("#resumeModal");
-        const mediaModal = qs("#mediaModal");
-        const modalContent = qs("#modalContent");
-        const categoryFilterContainer = qs("#categoryFilter");
-        const projectsGrid = qs("#projectsGrid");
-        const backToTopBtn = qs("#backToTopBtn");
-
-        // --- New Landing Page Particle Animation ---
-        const canvas = qs('#landingCanvas');
-        const ctx = canvas.getContext('2d');
-        let particlesArray;
-
+        // --- PARTICLE ANIMATION ---
         function setupCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         }
-
         class Particle {
             constructor(x, y, directionX, directionY, size, color) {
-                this.x = x;
-                this.y = y;
-                this.directionX = directionX;
-                this.directionY = directionY;
-                this.size = size;
-                this.color = color;
+                this.x = x; this.y = y; this.directionX = directionX; this.directionY = directionY; this.size = size; this.color = color;
             }
             draw() {
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-                ctx.fillStyle = 'rgba(0, 68, 179, 0.4)'; // Faded custom-blue
+                ctx.fillStyle = 'rgba(0, 68, 179, 0.4)';
                 ctx.fill();
             }
             update() {
@@ -435,7 +442,6 @@
                 this.draw();
             }
         }
-
         function initParticles() {
             particlesArray = [];
             let numberOfParticles = (canvas.height * canvas.width) / 12000;
@@ -448,7 +454,6 @@
                 particlesArray.push(new Particle(x, y, directionX, directionY, size));
             }
         }
-
         function connectParticles() {
             let opacityValue = 1;
             for (let a = 0; a < particlesArray.length; a++) {
@@ -467,7 +472,6 @@
                 }
             }
         }
-
         function animateParticles() {
             requestAnimationFrame(animateParticles);
             ctx.clearRect(0, 0, innerWidth, innerHeight);
@@ -477,62 +481,10 @@
             connectParticles();
         }
 
-        window.addEventListener('resize', () => {
-            setupCanvas();
-            initParticles();
-        });
-
-
-        const hideLanding = () => {
-            landing.classList.add("opacity-0", "pointer-events-none");
-            setTimeout(() => landing.classList.add("hidden"), 700);
-            document.body.style.overflow = 'auto';
-        };
-        enterBtn.addEventListener("click", hideLanding);
-        document.addEventListener("keydown", (e) => {
-            if (e.key === "Enter" && !landing.classList.contains("hidden") && !landing.classList.contains("opacity-0")) hideLanding();
-        });
-
-        mainNavButtons.forEach((btn) => {
-            btn.addEventListener("click", () => {
-                const targetPageId = btn.getAttribute("data-page");
-                mainNavButtons.forEach((b) => {
-                    b.classList.remove("active", "bg-custom-blue", "text-white");
-                    b.classList.add("text-custom-blue", "hover:bg-blue-100");
-                });
-                btn.classList.add("active", "bg-custom-blue", "text-white");
-                btn.classList.remove("text-custom-blue", "hover:bg-blue-100");
-                pages.forEach((page) => {
-                    page.classList.add("hidden");
-                    page.classList.remove("active", "animate-fade-in-up");
-                });
-                const targetPage = document.getElementById(targetPageId);
-                if (targetPage) {
-                    targetPage.classList.remove("hidden");
-                    targetPage.classList.add("active", "animate-fade-in-up");
-                    targetPage.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-
-        qsa('.nav-btn').forEach(button => {
-            if (!button.classList.contains('active')) button.classList.add('text-custom-blue', 'hover:bg-blue-100', 'transition-colors');
-            else button.classList.add('bg-custom-blue', 'text-white');
-        });
-
-        resumeBtn.addEventListener("click", () => {
-            resumeModal.classList.remove("hidden");
-            document.body.style.overflow = 'hidden';
-        });
-        window.closeResumeModal = () => {
-            resumeModal.classList.add("hidden");
-            document.body.style.overflow = 'auto';
-        };
-        resumeModal.addEventListener("click", (e) => { if (e.target === resumeModal) closeResumeModal(); });
-
+        // --- PAGE & PROJECT RENDERING ---
         function renderFilterButtons() {
             const categories = ["All", ...new Set(projects.map((p) => p.category))];
-            categoryFilterContainer.innerHTML = ''; // Clear existing
+            categoryFilterContainer.innerHTML = '';
             categories.forEach((cat, idx) => {
                 const btn = document.createElement("button");
                 btn.textContent = cat || "Uncategorized";
@@ -554,21 +506,17 @@
                 categoryFilterContainer.appendChild(btn);
             });
         }
-
         function renderProjects(filter = "All") {
             projectsGrid.innerHTML = "";
             const filteredProjects = filter === "All" ? projects : projects.filter((p) => p.category === filter);
-            
             filteredProjects.forEach((proj) => {
                 const originalIndex = projects.findIndex(p => p.title === proj.title);
                 const card = document.createElement("div");
                 card.className = "bg-slate-50 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col overflow-hidden";
                 card.style.animation = `fadeInUp 0.5s ease-out ${originalIndex * 50}ms forwards`;
                 card.classList.add('opacity-0');
-
                 const aiContentId = `ai-content-${originalIndex}`;
                 const explainBtnId = `explain-btn-${originalIndex}`;
-
                 const tagsHTML = proj.tags?.map(t => `<span class="inline-block bg-custom-blue/10 text-custom-blue text-xs font-press-start px-2 py-1 rounded-full">${t}</span>`).join(" ") || "";
                 const bulletsHTML = proj.bullets?.map(b => `<li class="text-sm text-medium-text">${b}</li>`).join("") || "";
                 const attachmentsHTML = proj.media?.map((m, i) => {
@@ -580,7 +528,6 @@
                     const displayName = m.name || m.src.split("/").pop().substring(0, 20) + (m.src.split("/").pop().length > 20 ? '...' : '');
                     return `<button class="attachment-btn flex items-center gap-2 text-sm text-custom-blue bg-custom-blue/10 hover:bg-custom-blue/20 p-2 rounded-md transition-colors duration-200" onclick="openMediaModal(${originalIndex}, ${i})"> ${iconSVG} <span class="truncate" title="${m.src.split("/").pop()}">${displayName}</span></button>`;
                 }).join(" ") || "";
-
                 card.innerHTML = `
                     <div class="p-5 flex-grow">
                         <h3 class="text-xl font-press-start text-custom-blue mb-3">${proj.title}</h3>
@@ -601,7 +548,6 @@
                 qs(`#${explainBtnId}`).addEventListener('click', (e) => toggleProjectExplanation(e.currentTarget));
             });
         }
-
         function toggleProjectExplanation(buttonElement) {
             const projectIndex = parseInt(buttonElement.dataset.projectIndex);
             const project = projects[projectIndex];
@@ -618,82 +564,128 @@
                  buttonElement.innerHTML = '✨ Explain Project';
             }
         }
-
-        let currentMediaIndex = 0;
-        let currentMediaArray = [];
+        
+        // --- MODAL LOGIC ---
         window.openMediaModal = (projectIndex, mediaIndex) => {
             currentMediaArray = projects[projectIndex].media;
             currentMediaIndex = mediaIndex;
-            mediaModal.classList.remove("hidden");
-            document.body.style.overflow = 'hidden';
             renderMediaItem();
         };
-        window.closeMediaModal = () => {
-            mediaModal.classList.add("hidden");
-            modalContent.innerHTML = "";
-            document.body.style.overflow = 'auto';
+        window.closeMediaModal = (event, forceClose = false) => {
+            if (forceClose || (event && event.target === mediaModal)) {
+                mediaModal.classList.add("hidden");
+                document.body.style.overflow = 'auto';
+            }
         };
         window.prevMedia = () => {
-            if (currentMediaArray.length === 0) return;
             currentMediaIndex = (currentMediaIndex - 1 + currentMediaArray.length) % currentMediaArray.length;
             renderMediaItem();
         };
         window.nextMedia = () => {
-            if (currentMediaArray.length === 0) return;
             currentMediaIndex = (currentMediaIndex + 1) % currentMediaArray.length;
             renderMediaItem();
         };
         function renderMediaItem() {
-            modalContent.innerHTML = "";
             const item = currentMediaArray[currentMediaIndex];
             if (!item) return;
+
+            modalContainer.innerHTML = '';
             let element;
+
             if (item.type === "pdf") {
+                mediaModal.className = "fixed inset-0 bg-black/80 backdrop-blur-sm z-[2000] p-4 flex items-center justify-center";
+                modalContainer.className = "relative bg-white rounded-lg shadow-2xl w-full max-w-4xl h-[90vh] flex flex-col";
                 element = document.createElement("iframe");
                 element.src = item.src;
-                element.className = "w-full h-full";
+                element.className = "w-full h-full flex-grow border-none";
                 element.title = item.name || "PDF Viewer";
-            } else if (item.type === "image" || item.type === "img") {
-                element = document.createElement("img");
-                element.src = item.src;
-                element.alt = item.name || "Project image";
-                element.className = "max-w-full max-h-[85vh] object-contain mx-auto";
-                element.onerror = () => { modalContent.innerHTML = `<p class="p-4 text-center text-red-500">Could not load image: ${item.src}</p>`; };
-            } else if (item.type === "video") {
-                element = document.createElement("video");
-                element.src = item.src;
-                element.controls = true;
-                element.autoplay = true;
-                element.className = "w-full max-h-[85vh] object-contain";
-                element.onerror = () => { modalContent.innerHTML = `<p class="p-4 text-center text-red-500">Could not load video: ${item.src}</p>`;};
+                modalContainer.appendChild(element);
             } else {
-                element = document.createElement("div");
-                element.className = "p-4 text-center";
-                const link = document.createElement("a");
-                link.href = item.src;
-                link.textContent = `View File: ${item.name || item.src.split("/").pop()}`;
-                link.target = "_blank";
-                link.className = "text-custom-blue hover:underline text-lg";
-                element.appendChild(link);
-                const desc = document.createElement("p");
-                desc.textContent = "Unsupported file type for inline preview.";
-                desc.className = "text-sm text-light-text mt-2";
-                element.appendChild(desc);
+                mediaModal.className = "fixed inset-0 bg-black/80 backdrop-blur-sm z-[2000] p-4 flex items-center justify-center";
+                modalContainer.className = "relative w-auto h-auto";
+                if (item.type === "image" || item.type === "img") {
+                    element = document.createElement("img");
+                    element.src = item.src;
+                    element.alt = item.name || "Project image";
+                    element.className = "block max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-xl";
+                    element.onerror = () => { modalContainer.innerHTML = `<p class="p-4 text-center text-red-500 bg-white rounded">Could not load image: ${item.src}</p>`; };
+                } else if (item.type === "video") {
+                    element = document.createElement("video");
+                    element.src = item.src;
+                    element.controls = true;
+                    element.autoplay = true;
+                    element.className = "block max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-xl";
+                    element.onerror = () => { modalContainer.innerHTML = `<p class="p-4 text-center text-red-500 bg-white rounded">Could not load video: ${item.src}</p>`;};
+                } else {
+                    element = document.createElement("div");
+                    element.className = "p-8 bg-white rounded-lg";
+                    element.innerHTML = `<p class="text-center">Cannot preview this file type.</p><a href="${item.src}" target="_blank" class="block text-center text-custom-blue hover:underline mt-2">Download File</a>`;
+                }
+                if (element) {
+                    modalContainer.appendChild(element);
+                }
             }
-            modalContent.appendChild(element);
+            mediaModal.classList.remove("hidden");
+            document.body.style.overflow = 'hidden';
         }
-        mediaModal.addEventListener("click", (e) => { if (e.target === mediaModal) closeMediaModal(); });
+
+        // --- GENERAL EVENT LISTENERS & INITIALIZATION ---
+        const hideLanding = () => {
+            landing.classList.add("opacity-0", "pointer-events-none");
+            setTimeout(() => landing.classList.add("hidden"), 700);
+            document.body.style.overflow = 'auto';
+        };
+
+        enterBtn.addEventListener("click", hideLanding);
         document.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" && !landing.classList.contains("hidden") && !landing.classList.contains("opacity-0")) hideLanding();
             if (e.key === "Escape") {
                 if (!resumeModal.classList.contains("hidden")) closeResumeModal();
-                if (!mediaModal.classList.contains("hidden")) closeMediaModal();
+                if (!mediaModal.classList.contains("hidden")) closeMediaModal(null, true);
             }
             if (!mediaModal.classList.contains("hidden")) {
                 if (e.key === "ArrowLeft") prevMedia();
                 if (e.key === "ArrowRight") nextMedia();
             }
         });
-
+        mainNavButtons.forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const targetPageId = btn.getAttribute("data-page");
+                mainNavButtons.forEach((b) => {
+                    b.classList.remove("active", "bg-custom-blue", "text-white");
+                    b.classList.add("text-custom-blue", "hover:bg-blue-100");
+                });
+                btn.classList.add("active", "bg-custom-blue", "text-white");
+                btn.classList.remove("text-custom-blue", "hover:bg-blue-100");
+                pages.forEach((page) => {
+                    page.classList.add("hidden");
+                    page.classList.remove("active", "animate-fade-in-up");
+                });
+                const targetPage = document.getElementById(targetPageId);
+                if (targetPage) {
+                    targetPage.classList.remove("hidden");
+                    targetPage.classList.add("active", "animate-fade-in-up");
+                    targetPage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+        qsa('.nav-btn').forEach(button => {
+            if (!button.classList.contains('active')) button.classList.add('text-custom-blue', 'hover:bg-blue-100', 'transition-colors');
+            else button.classList.add('bg-custom-blue', 'text-white');
+        });
+        resumeBtn.addEventListener("click", () => {
+            resumeModal.classList.remove("hidden");
+            document.body.style.overflow = 'hidden';
+        });
+        window.closeResumeModal = () => {
+            resumeModal.classList.add("hidden");
+            document.body.style.overflow = 'auto';
+        };
+        resumeModal.addEventListener("click", (e) => { if (e.target === resumeModal) closeResumeModal(); });
+        window.addEventListener('resize', () => {
+            setupCanvas();
+            initParticles();
+        });
         window.addEventListener('scroll', () => {
             if (window.scrollY > 300) {
                 backToTopBtn.classList.remove('opacity-0', 'translate-y-10');
@@ -704,18 +696,14 @@
             }
         });
         backToTopBtn.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
-
         qs("#currentYear").textContent = new Date().getFullYear();
-
         document.addEventListener('DOMContentLoaded', () => {
             if (landing && !landing.classList.contains("hidden")) {
                  document.body.style.overflow = 'hidden';
-                 // New landing page setup
                  setupCanvas();
                  initParticles();
                  animateParticles();
             } else {
-                // If landing is already hidden, ensure scrolling is enabled
                 document.body.style.overflow = 'auto';
             }
             renderFilterButtons();
