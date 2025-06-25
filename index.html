@@ -53,6 +53,10 @@
         main { flex-grow: 1; }
         .ai-content-area { margin-top: 1rem; padding: 0.75rem; background-color: #f0e6ff; border-left: 4px solid #6d28d9; border-radius: 4px; font-size: 0.875rem; color: #3730a3; }
         .ai-content-area p { margin-bottom: 0.5rem; }
+        /* *** FIX: Ensure smooth, native-like scrolling for PDF modal on mobile *** */
+        #modalContent {
+          -webkit-overflow-scrolling: touch;
+        }
     </style>
 </head>
 
@@ -648,10 +652,10 @@
             if (!item) return;
             let element;
             if (item.type === "pdf") {
-                // *** FIX: Use <iframe> instead of <embed> for better mobile compatibility ***
                 element = document.createElement("iframe");
                 element.src = item.src;
-                element.className = "w-full h-full min-h-[80vh]";
+                // *** FIX: Use simple w-full and h-full. Let the parent handle scrolling. ***
+                element.className = "w-full h-full";
                 element.title = item.name || "PDF Viewer";
             } else if (item.type === "image" || item.type === "img") {
                 element = document.createElement("img");
