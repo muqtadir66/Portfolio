@@ -92,28 +92,38 @@
         <section id="homeSection" class="page active animate-fade-in-up">
             <div class="bg-white shadow-xl rounded-xl p-6 sm:p-8 md:p-10">
                 <h2 class="font-press-start text-2xl sm:text-3xl text-custom-blue mb-6">About Me</h2>
-                <div class="grid md:grid-cols-3 gap-8 items-center">
-                    <div class="md:col-span-2 space-y-4 text-medium-text text-sm sm:text-base leading-relaxed">
-                        <p>Hello! I’m <strong class="text-custom-blue">Muqtadir Hussain</strong>. I recently graduated with a degree in Engineering Physics specializing in Nuclear Systems and Semiconductor Microfabrication. I love designing complex control systems, working with photonics, and building IoT devices. In my free time, I play basketball, tinker with arduino projects, and explore new data‐driven solutions.</p>
+                <!-- Main grid for layout -->
+                <div class="grid md:grid-cols-5 gap-8 md:gap-12 items-start">
+                    
+                    <!-- Left Column: Text Content -->
+                    <div class="md:col-span-3 space-y-4 text-medium-text text-sm sm:text-base leading-relaxed">
+                        <p>Hello! I’m <strong class="text-custom-blue">Muqtadir Hussain</strong>.</p>
+                        <p>I recently graduated with a degree in Engineering Physics & Management from McMaster University, where I developed a broad, multidisciplinary engineering skillset alongside a strategic business perspective. My passion lies in tackling complex technical challenges across diverse, high-impact fields including <strong>nuclear engineering</strong>, <strong>semiconductor technology</strong>, <strong>autonomous systems</strong>, and <strong>photonics</strong>.</p>
+                        <p>Throughout my projects, I've embraced this versatility by applying fundamental physics and systems-level thinking to varied problems. I have simulated CANDU reactor behavior using MCNP, designed and fabricated silicon solar cells in a cleanroom, engineered an AI-powered mechatronic system using computer vision, and modeled optical communication links for satellites.</p>
+                        <p>This experience has honed my ability to integrate hardware, software, and advanced modeling to develop robust and innovative solutions. I am eager to apply this unique blend of analytical and hands-on skills to help build the next generation of technology.</p>
                         <p>This portfolio showcases my journey, skills, and projects. Feel free to explore and reach out if you'd like to connect!</p>
                     </div>
-                    <div class="md:col-span-1 flex justify-center">
-                        <img src="media/muq.jfif" alt="Muqtadir Hussain" class="rounded-full shadow-lg w-48 h-48 sm:w-56 sm:h-56 object-cover border-4 border-custom-blue">
+
+                    <!-- Right Column: Photo and Connect Info -->
+                    <div class="md:col-span-2 flex flex-col items-center text-center">
+                        <div class="flex justify-center mb-8">
+                            <img src="media/muq.jfif" alt="Muqtadir Hussain" class="rounded-full shadow-lg w-48 h-48 sm:w-56 sm:h-56 object-cover border-4 border-custom-blue">
+                        </div>
+                        <div class="space-y-3 mb-8">
+                            <h3 class="font-press-start text-xl text-custom-blue">Connect</h3>
+                            <p class="text-medium-text"><strong>Email:</strong> <a href="mailto:muqti123@gmail.com" class="text-custom-blue hover:underline">muqti123@gmail.com</a></p>
+                            <p class="text-medium-text"><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/muqtadir66" target="_blank" rel="noopener noreferrer" class="text-custom-blue hover:underline">linkedin.com/in/muqtadir66</a></p>
+                            <p class="text-medium-text"><strong>GitHub:</strong> <a href="https://github.com/muqtadir66" target="_blank" rel="noopener noreferrer" class="text-custom-blue hover:underline">github.com/muqtadir66</a></p>
+                        </div>
+                         <button id="resumeBtn" class="inline-flex items-center gap-2 bg-terminal-green text-terminal-bg font-press-start text-sm py-3 px-6 rounded-lg hover:bg-green-400 transition-all duration-200 transform hover:scale-105 shadow-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-file-earmark-text" viewBox="0 0 16 16">
+                                <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5.5 9a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5.5 11a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2z"/>
+                                <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2.5h2.5L9.5 1zM3 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm7 11.5a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5h4.5v3H12v9.5z"/>
+                            </svg>
+                            View Résumé
+                        </button>
                     </div>
                 </div>
-                <div class="mt-8 space-y-3">
-                    <h3 class="font-press-start text-xl text-custom-blue mb-4">Connect</h3>
-                    <p class="text-medium-text"><strong>Email:</strong> <a href="mailto:muqti123@gmail.com" class="text-custom-blue hover:underline">muqti123@gmail.com</a></p>
-                    <p class="text-medium-text"><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/muqtadir66" target="_blank" rel="noopener noreferrer" class="text-custom-blue hover:underline">linkedin.com/in/muqtadir66</a></p>
-                    <p class="text-medium-text"><strong>GitHub:</strong> <a href="https://github.com/muqtadir66" target="_blank" rel="noopener noreferrer" class="text-custom-blue hover:underline">github.com/muqtadir66</a></p>
-                </div>
-                <button id="resumeBtn" class="mt-8 inline-flex items-center gap-2 bg-terminal-green text-terminal-bg font-press-start text-sm py-3 px-6 rounded-lg hover:bg-green-400 transition-all duration-200 transform hover:scale-105 shadow-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-file-earmark-text" viewBox="0 0 16 16">
-                        <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5.5 9a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5.5 11a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2z"/>
-                        <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2.5h2.5L9.5 1zM3 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm7 11.5a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5h4.5v3H12v9.5z"/>
-                    </svg>
-                    View Résumé
-                </button>
             </div>
         </section>
 
@@ -265,7 +275,7 @@
                 category: "Capstone Projects",
                 tags: ["Sales", "NLP", "Voice Agent", "CRM", "KPIs", "System Architecture"],
                 bullets: ["Engineered an AI-driven autonomous client engagement system to resolve lead qualification and conversion inefficiencies for enterprise software firm SOTI, integrating business process mapping with NLP-capable virtual agents.","Applied systems engineering principles to model input/output workflows for sales funnel automation; designed technical process flowcharts for inbound validation, triage, and outbound engagement.","Conducted data-driven performance modeling using historical lead datasets to define qualification thresholds, interaction logic, and routing protocols for decision-tree–based voice agents.","Developed a phased implementation plan including a $10k cost model, performance KPIs, risk analysis (risk register + mitigation), and API integration scope for CRM and telephony platforms.","Delivered full-system architecture documentation, comparative evaluation of two solution frameworks using weighted scoring matrices, and a stakeholder-aligned deployment timeline.","Presented technical recommendations and final solution strategy to industry executives; submitted a formalized client report detailing design decisions, cost-benefit analysis, and ROI projection.",],
-                media: [{ type: "pdf", src: "media/SOTI Inc – Client Deck.pdf", name: "SOTI Inc – Client Deck" },{ type: "pptx", src: "media/SOTI Inc - Presentation Deck.pptx", name: "SOTI Inc - Presentation Deck" },],
+                media: [{ type: "pdf", src: "media/SOTI Inc – Client Deck.pdf", name: "SOTI Inc – Client Deck" },],
                 aiExplanation: "This capstone project was a real-world consulting engagement where I designed a technical solution for a business problem. I architected an AI-powered system to automate sales lead qualification for a major software company. This involved process modeling, data analysis, and designing the integration points with existing systems like CRMs. It's a prime example of applying an engineering mindset to improve business efficiency."
             },
             {
