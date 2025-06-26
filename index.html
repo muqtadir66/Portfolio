@@ -91,25 +91,16 @@
         <!-- =================  HOME SECTION  ================ -->
         <section id="homeSection" class="page active animate-fade-in-up">
             <div class="bg-white shadow-xl rounded-xl p-6 sm:p-8 md:p-10">
-                <h2 class="font-press-start text-2xl sm:text-3xl text-custom-blue mb-6">About Me</h2>
-                <!-- Main grid for layout -->
-                <div class="grid md:grid-cols-5 gap-8 md:gap-12 items-start">
+                <h2 class="font-press-start text-2xl sm:text-3xl text-custom-blue mb-8">About Me</h2>
+                <!-- Main grid for layout: 1 col on mobile, 5 cols on desktop -->
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-y-8 md:gap-x-12 items-start">
                     
-                    <!-- Left Column: Text Content -->
-                    <div class="md:col-span-3 space-y-4 text-medium-text text-sm sm:text-base leading-relaxed">
-                        <p>Hello! I’m <strong class="text-custom-blue">Muqtadir Hussain</strong>.</p>
-                        <p>I recently graduated with a degree in Engineering Physics & Management from McMaster University, where I developed a broad, multidisciplinary engineering skillset alongside a strategic business perspective. My passion lies in tackling complex technical challenges across diverse, high-impact fields including <strong>nuclear engineering</strong>, <strong>semiconductor technology</strong>, <strong>autonomous systems</strong>, and <strong>photonics</strong>.</p>
-                        <p>Throughout my projects, I've embraced this versatility by applying fundamental physics and systems-level thinking to varied problems. I have simulated CANDU reactor behavior using MCNP, designed and fabricated silicon solar cells in a cleanroom, engineered an AI-powered mechatronic system using computer vision, and modeled optical communication links for satellites.</p>
-                        <p>This experience has honed my ability to integrate hardware, software, and advanced modeling to develop robust and innovative solutions. I am eager to apply this unique blend of analytical and hands-on skills to help build the next generation of technology.</p>
-                        <p>This portfolio showcases my journey, skills, and projects. Feel free to explore and reach out if you'd like to connect!</p>
-                    </div>
-
-                    <!-- Right Column: Photo and Connect Info -->
-                    <div class="md:col-span-2 flex flex-col items-center text-center">
-                        <div class="flex justify-center mb-8">
+                    <!-- Right Column (now first in code for mobile stacking order) -->
+                    <div class="md:col-span-2 md:order-last flex flex-col items-center text-center">
+                        <div class="flex justify-center mb-6">
                             <img src="media/muq.jfif" alt="Muqtadir Hussain" class="rounded-full shadow-lg w-48 h-48 sm:w-56 sm:h-56 object-cover border-4 border-custom-blue">
                         </div>
-                        <div class="space-y-3 mb-8">
+                        <div class="space-y-3 mb-6">
                             <h3 class="font-press-start text-xl text-custom-blue">Connect</h3>
                             <p class="text-medium-text"><strong>Email:</strong> <a href="mailto:muqti123@gmail.com" class="text-custom-blue hover:underline">muqti123@gmail.com</a></p>
                             <p class="text-medium-text"><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/muqtadir66" target="_blank" rel="noopener noreferrer" class="text-custom-blue hover:underline">linkedin.com/in/muqtadir66</a></p>
@@ -123,6 +114,16 @@
                             View Résumé
                         </button>
                     </div>
+
+                    <!-- Left Column (now second in code) -->
+                    <div class="md:col-span-3 space-y-4 text-medium-text text-sm sm:text-base leading-relaxed">
+                        <p>Hello! I’m <strong class="text-custom-blue">Muqtadir Hussain</strong>.</p>
+                        <p>I recently graduated with a degree in Engineering Physics & Management from McMaster University, where I developed a broad, multidisciplinary engineering skillset alongside a strategic business perspective. My passion lies in tackling complex technical challenges across diverse, high-impact fields including <strong>nuclear engineering</strong>, <strong>semiconductor technology</strong>, <strong>autonomous systems</strong>, and <strong>photonics</strong>.</p>
+                        <p>Throughout my projects, I've embraced this versatility by applying fundamental physics and systems-level thinking to varied problems. I have simulated CANDU reactor behavior using MCNP, designed and fabricated silicon solar cells in a cleanroom, engineered an AI-powered mechatronic system using computer vision, and modeled optical communication links for satellites.</p>
+                        <p>This experience has honed my ability to integrate hardware, software, and advanced modeling to develop robust and innovative solutions. I am eager to apply this unique blend of analytical and hands-on skills to help build the next generation of technology.</p>
+                        <p>This portfolio showcases my journey, skills, and projects. Feel free to explore and reach out if you'd like to connect!</p>
+                    </div>
+
                 </div>
             </div>
         </section>
