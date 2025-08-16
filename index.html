@@ -1,749 +1,1611 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Muqtadir Hussain – Portfolio & About Me</title>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muqtadir Hussain - Engineering Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        'press-start': ['"Press Start 2P"', 'cursive'],
-                        'sans': ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        'custom-blue': '#0044b3',
-                        'terminal-green': '#23ff3d',
-                        'terminal-bg': '#0a0a0a',
-                        'light-bg': '#f8f9fa',
-                        'dark-text': '#1a202c',
-                        'medium-text': '#4a5568',
-                        'light-text': '#718096',
-                        'ai-purple': '#6d28d9',
-                    },
-                    animation: {
-                        'fade-in-up': 'fadeInUp 1s ease-out forwards',
-                        'blink': 'blink 1s step-end infinite',
-                    },
-                    keyframes: {
-                        fadeInUp: {
-                            '0%': { opacity: '0', transform: 'translateY(20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        },
-                        blink: {
-                            'from, to': { 'border-right-color': 'transparent' },
-                            '50%': { 'border-right-color': '#23ff3d' },
-                        },
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- THREE.js and Post-processing scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Exo+2:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #1a202c; }
-        ::-webkit-scrollbar-thumb { background: #0044b3; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #00338a; }
-        html, body { height: 100%; font-family: 'Inter', sans-serif; background-color: #f8f9fa; color: #1a202c; }
-        body { display: flex; flex-direction: column; }
-        main { flex-grow: 1; }
-        .ai-content-area { margin-top: 1rem; padding: 0.75rem; background-color: #f0e6ff; border-left: 4px solid #6d28d9; border-radius: 4px; font-size: 0.875rem; color: #3730a3; }
-        .ai-content-area p { margin-bottom: 0.5rem; }
+      :root {
+        --bg-color: #0a0a10;
+        /* Darker blue-ish background */
+        --panel-bg: rgba(20, 20, 20, 0.6);
+        --border-color: rgba(0, 191, 255, 0.3);
+        /* Cyan/Blue border */
+        --text-primary: #EAEAEA;
+        --text-secondary: #A0A0A0;
+        --accent-cyan: #00BFFF;
+        /* Deep sky blue accent */
+      }
+
+      body {
+        background-color: var(--bg-color);
+        color: var(--text-primary);
+        font-family: 'Exo 2', sans-serif;
+        background-image:
+          linear-gradient(rgba(0, 191, 255, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 191, 255, 0.03) 1px, transparent 1px);
+        background-size: 30px 30px;
+      }
+
+      .font-mono {
+        font-family: 'Roboto Mono', monospace;
+      }
+
+      .nav-link {
+        position: relative;
+        transition: color 0.3s ease;
+        color: var(--text-secondary);
+      }
+
+      .nav-link::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -4px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: var(--accent-cyan);
+        transition: width 0.3s ease;
+      }
+
+      .nav-link:hover,
+      .nav-link.active {
+        color: var(--accent-cyan);
+      }
+
+      .nav-link.active::after {
+        width: 100%;
+      }
+
+      .page {
+        display: none;
+        animation: fadeIn 0.8s ease-in-out;
+      }
+
+      .page.active {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Modal Styles */
+      .modal-overlay {
+        z-index: 50;
+      }
+
+      .modal-container {
+        background-color: var(--bg-color);
+        border: 1px solid var(--border-color);
+      }
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: var(--bg-color);
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: var(--border-color);
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--accent-cyan);
+      }
+
+      /* Footer visibility */
+      .footer {
+        display: none;
+        /* Hidden by default */
+      }
+
+      body.page-about .footer,
+      body.page-skills .footer,
+      body.page-projects .footer {
+        display: block;
+        /* Visible on specific pages */
+      }
+
+      /* Special case for home page footer */
+      body.page-home.scrolled .footer {
+        display: block;
+      }
+
+      /* Scroll down indicator */
+      .scroll-down {
+        position: absolute;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        animation: bounce 2s infinite;
+        cursor: pointer;
+      }
+
+      @keyframes bounce {
+
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
+          transform: translateX(-50%) translateY(0);
+        }
+
+        40% {
+          transform: translateX(-50%) translateY(-20px);
+        }
+
+        60% {
+          transform: translateX(-50%) translateY(-10px);
+        }
+      }
+
+      /* Styling for project filter buttons */
+      .project-category-filter button {
+        transition: all 0.2s ease-in-out;
+        width: 100%;
+      }
+
+      .project-category-filter button:hover:not(.active) {
+        background-color: rgba(0, 191, 255, 0.1);
+        color: var(--accent-cyan);
+      }
+
+      .project-category-filter button.active {
+        background-color: var(--accent-cyan);
+        color: var(--bg-color);
+        font-weight: 600;
+      }
+
+      /* Resume Section Styles - Updated for compactness */
+      .resume-content {
+        background-color: rgba(10, 10, 10, 0.3);
+        border: 1px solid var(--border-color);
+        padding: 1.5rem;
+        /* Reduced padding */
+        border-radius: 0.5rem;
+        font-size: 0.95rem;
+        /* Slightly smaller base font */
+      }
+
+      .resume-section-title {
+        font-size: 1.15rem;
+        /* Smaller section title */
+        font-weight: 600;
+        color: var(--accent-cyan);
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 0.4rem;
+        margin-bottom: 1rem;
+        /* Reduced margin */
+        margin-top: 1.5rem;
+        /* Reduced margin */
+      }
+
+      .resume-item {
+        margin-bottom: 0.75rem;
+        /* Reduced margin */
+      }
+
+      .resume-item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 0.15rem;
+        /* Reduced margin */
+      }
+
+      .resume-item-title {
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+
+      .resume-item-subtitle {
+        font-style: italic;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+
+      .resume-item-date {
+        color: var(--text-secondary);
+        font-family: 'Roboto Mono', monospace;
+        white-space: nowrap;
+        padding-left: 1rem;
+        font-size: 0.9rem;
+      }
+
+      .resume-item-bullets {
+        list-style-position: outside;
+        padding-left: 1rem;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        /* Smaller bullet text */
+      }
+
+      .resume-item-bullets li {
+        margin-bottom: 0.2rem;
+        /* Tighter bullet spacing */
+      }
     </style>
-</head>
-
-<body class="bg-light-bg text-dark-text">
-
-    <!-- =================  NEW LANDING OVERLAY  ================ -->
-    <div id="landing" class="fixed inset-0 bg-dark-text z-[5000] transition-opacity duration-700 ease-in-out">
-        <canvas id="landingCanvas" class="absolute top-0 left-0 w-full h-full"></canvas>
-        <div class="relative z-10 flex flex-col items-center justify-center h-full text-center text-white p-4">
-            <div class="landing-content opacity-0" style="animation: fadeInUp 1s ease-out 0.5s forwards;">
-                <h1 class="text-5xl md:text-7xl font-bold font-sans tracking-tight">Muqtadir Hussain</h1>
-                <p class="mt-4 text-lg md:text-xl text-gray-300">Engineering Physics & Management  (B.Eng.Mgt)</p>
-                <button id="enterBtn" class="mt-8 inline-flex items-center gap-2 bg-custom-blue text-white font-sans font-semibold py-3 px-8 rounded-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
-                    View Portfolio
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
-                      <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/>
-                    </svg>
-                </button>
-            </div>
+  </head>
+  <body class="page-home">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 w-full z-40 bg-black/30 backdrop-blur-md border-b border-solid border-[color:var(--border-color)]">
+      <nav class="container mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
+        <a href="#" data-page="home" class="text-xl md:text-2xl font-bold text-accent-cyan font-mono tracking-wider nav-link">MH</a>
+        <div class="flex items-center space-x-2 sm:space-x-3 md:space-x-6">
+          <a href="#" data-page="home" class="nav-link active text-xs sm:text-sm md:text-base">Home</a>
+          <a href="#" data-page="resume" class="nav-link text-xs sm:text-sm md:text-base">Résumé</a>
+          <a href="#" data-page="about" class="nav-link text-xs sm:text-sm md:text-base">About</a>
+          <a href="#" data-page="skills" class="nav-link text-xs sm:text-sm md:text-base">Skills</a>
+          <a href="#" data-page="projects" class="nav-link text-xs sm:text-sm md:text-base">Projects</a>
         </div>
-    </div>
-
-    <!-- =================  MAIN NAVBAR  ================ -->
-    <header class="sticky top-0 z-[1000] bg-white/90 backdrop-blur-md shadow-md transition-all duration-300">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-3">
-            <a href="#homeSection" class="text-lg sm:text-xl font-press-start text-custom-blue hover:text-blue-700 transition-colors">Muqtadir Hussain</a>
-            <nav id="mainNav" class="flex gap-2 sm:gap-3">
-                <button data-page="homeSection" class="nav-btn active px-3 py-2 sm:px-4 font-press-start text-xs sm:text-sm rounded-md">Home</button>
-                <button data-page="skillsSection" class="nav-btn px-3 py-2 sm:px-4 font-press-start text-xs sm:text-sm rounded-md">Skills</button>
-                <button data-page="portfolioSection" class="nav-btn px-3 py-2 sm:px-4 font-press-start text-xs sm:text-sm rounded-md">Portfolio</button>
-            </nav>
-        </div>
+        <a href="mailto:muqti123@gmail.com" class="inline-block bg-accent-cyan/10 border border-solid border-accent-cyan text-accent-cyan font-bold py-1 px-2 sm:py-2 sm:px-4 rounded-md hover:bg-accent-cyan hover:text-bg-color transition-colors text-xs sm:text-sm"> Contact </a>
+      </nav>
     </header>
-
-    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        <!-- =================  HOME SECTION  ================ -->
-        <section id="homeSection" class="page active animate-fade-in-up">
-            <div class="bg-white shadow-xl rounded-xl p-6 sm:p-8 md:p-10">
-                <h2 class="font-press-start text-2xl sm:text-3xl text-custom-blue mb-6">About Me</h2>
-                <!-- Main grid for layout -->
-                <div class="grid md:grid-cols-5 gap-8 md:gap-12 items-start">
-                    
-                    <!-- Left Column: Text Content -->
-                    <div class="md:col-span-3 space-y-4 text-medium-text text-sm sm:text-base leading-relaxed">
-                        <p>Hello! I’m <strong class="text-custom-blue">Muqtadir Hussain</strong>.</p>
-                        <p>I recently graduated with a degree in <strong class="text-custom-blue">Engineering Physics & Management</strong> from McMaster University, where I developed a broad, multidisciplinary engineering skillset alongside a strategic business perspective. My passion lies in tackling complex technical challenges across diverse, high-impact fields including <strong>nuclear engineering, semiconductor technology, autonomous systems, and photonics</strong>.</p>
-                        <p>Throughout my projects, I've embraced this versatility by applying fundamental physics and systems-level thinking to varied problems. I have simulated CANDU reactor behavior using MCNP, designed and fabricated silicon solar cells in a cleanroom, engineered an AI-powered mechatronic system using computer vision, and modeled optical communication links for satellites. </p>
-                        <p>This experience has honed my ability to integrate hardware, software, and advanced modeling to develop robust and innovative solutions. I am eager to apply this unique blend of analytical and hands-on skills to help build the next generation of technology.</p>
-                        <p>This portfolio showcases my journey, skills, and projects. Feel free to explore and reach out if you'd like to connect!</p>
-                    </div>
-
-                    <!-- Right Column: Photo and Connect Info -->
-                    <div class="md:col-span-2 flex flex-col items-center text-center">
-                        <div class="flex justify-center mb-8">
-                            <img src="media/muq.jfif" alt="Muqtadir Hussain" class="rounded-full shadow-lg w-48 h-48 sm:w-56 sm:h-56 object-cover border-4 border-custom-blue">
-                        </div>
-                        <div class="space-y-3 mb-8">
-                            <h3 class="font-press-start text-xl text-custom-blue">Connect</h3>
-                            <p class="text-medium-text"><strong>Email:</strong> <a href="mailto:muqti123@gmail.com" class="text-custom-blue hover:underline">muqti123@gmail.com</a></p>
-                            <p class="text-medium-text"><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/muqtadir66" target="_blank" rel="noopener noreferrer" class="text-custom-blue hover:underline">linkedin.com/in/muqtadir66</a></p>
-                            <p class="text-medium-text"><strong>GitHub:</strong> <a href="https://github.com/muqtadir66" target="_blank" rel="noopener noreferrer" class="text-custom-blue hover:underline">github.com/muqtadir66</a></p>
-                        </div>
-                         <button id="resumeBtn" class="inline-flex items-center gap-2 bg-terminal-green text-terminal-bg font-press-start text-sm py-3 px-6 rounded-lg hover:bg-green-400 transition-all duration-200 transform hover:scale-105 shadow-md">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-file-earmark-text" viewBox="0 0 16 16">
-                                <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5.5 9a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5.5 11a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2z"/>
-                                <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2.5h2.5L9.5 1zM3 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm7 11.5a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5h4.5v3H12v9.5z"/>
-                            </svg>
-                            View Résumé
-                        </button>
-                    </div>
+    <main>
+      <!-- Home Page -->
+      <section id="home" class="page active">
+        <div class="relative">
+          <div id="home-hero" class="container mx-auto px-6 min-h-screen grid md:grid-cols-2 items-center gap-8 pt-20">
+            <div class="text-left">
+              <h1 class="text-5xl md:text-6xl font-bold leading-tight">Muqtadir Hussain</h1>
+              <p class="text-accent-cyan font-mono text-xl mt-4">Engineering Physics &amp; Management</p>
+              <p class="text-lg text-text-secondary max-w-lg mt-6"> Bridging fundamental physics with applied engineering to create innovative solutions in semiconductors, nuclear systems, and autonomous technology. </p>
+            </div>
+            <div id="home-canvas-container" class="w-full h-full min-h-[400px] md:min-h-0 cursor-grab active:cursor-grabbing"></div>
+          </div>
+          <div id="scroll-down-indicator" class="scroll-down text-accent-cyan">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </div>
+        <!-- RÉSUMÉ SECTION -->
+        <div id="resume-section" class="container mx-auto px-6 py-24 min-h-screen">
+          <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold mb-4">Résumé</h2>
+            <a href="media/Muqtadir's Resume.pdf" target="_blank" class="inline-block bg-accent-cyan text-bg-color font-bold py-3 px-8 rounded-md hover:bg-cyan-300 transition-colors"> Download Full Résumé (PDF) </a>
+          </div>
+          <div class="resume-content max-w-4xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-6">
+              <h3 class="text-3xl font-bold tracking-wider">Muqtadir Hussain</h3>
+              <div class="flex flex-wrap justify-center items-center gap-x-4 gap-y-1 mt-2 text-sm text-text-secondary">
+                <a href="mailto:muqti123@gmail.com" class="hover:text-accent-cyan">muqti123@gmail.com</a>
+                <span class="hidden sm:inline">&bull;</span>
+                <a href="https://linkedin.com/in/muqtadir66" target="_blank" class="hover:text-accent-cyan">LinkedIn</a>
+                <span class="hidden sm:inline">&bull;</span>
+                <a href="https://muqtadir66.github.io/Portfolio/" target="_blank" class="hover:text-accent-cyan">Portfolio</a>
+                <span class="hidden sm:inline">&bull;</span>
+                <span>Toronto, ON</span>
+              </div>
+            </div>
+            <!-- Education -->
+            <div>
+              <h4 class="resume-section-title">Education</h4>
+              <div class="resume-item">
+                <div class="resume-item-header">
+                  <div>
+                    <p class="resume-item-title">McMaster University, <span class="font-normal text-text-secondary">Hamilton, Ontario</span>
+                    </p>
+                    <p class="resume-item-subtitle">Bachelor of Engineering and Management (B.Eng.Mgt.), <strong>Engineering Physics</strong>
+                    </p>
+                  </div>
+                  <p class="resume-item-date">Sep 2019 - Apr 2025</p>
                 </div>
+              </div>
             </div>
-        </section>
-
-        <!-- =================  SKILLS SECTION  ================ -->
-        <section id="skillsSection" class="page hidden animate-fade-in-up">
-            <div class="bg-white shadow-xl rounded-xl p-6 sm:p-8 md:p-10">
-                <h2 class="font-press-start text-2xl sm:text-3xl text-custom-blue mb-8">Skills</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div class="bg-slate-50 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                        <h3 class="font-press-start text-lg text-custom-blue mb-3">Software & Programming</h3>
-                        <ul class="list-disc list-inside space-y-1 text-medium-text">
-                            <li>C, Python, MATLAB</li>
-                            <li>JavaScript, HTML, CSS</li>
-                            <li>MSP430 Assembly</li>
-                            <li>SQL, MongoDB</li>
-                            <li>LabVIEW, Multisim (SPICE)</li>
-                            <li>Version Control (Git, GitHub)</li>
-                        </ul>
-                    </div>
-                    <div class="bg-slate-50 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                        <h3 class="font-press-start text-lg text-custom-blue mb-3">Engineering & Design</h3>
-                        <ul class="list-disc list-inside space-y-1 text-medium-text">
-                            <li>Embedded Systems (MSP430, Arduino, Raspberry Pi)</li>
-                            <li>PID Control Systems</li>
-                            <li>Semiconductor Device Fabrication & TCAD (Sentaurus)</li>
-                            <li>Optical Systems Design (Zemax, RSoft)</li>
-                            <li>Nuclear Systems (MCNP, CANDU Simulators)</li>
-                            <li>CAD (Autodesk Inventor), 3D Printing</li>
-                            <li>IoT Systems & Cloud Platforms (Adafruit IO)</li>
-                        </ul>
-                    </div>
-                    <div class="bg-slate-50 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                        <h3 class="font-press-start text-lg text-custom-blue mb-3">Analytical & Other</h3>
-                        <ul class="list-disc list-inside space-y-1 text-medium-text">
-                            <li>Data Analysis & Visualization</li>
-                            <li>Signal Processing</li>
-                            <li>Fluid & Thermal Analysis (ANSYS Fluent)</li>
-                            <li>Technical Writing & Reporting</li>
-                            <li>Project Management & Consulting</li>
-                            <li>Problem Solving & Critical Thinking</li>
-                        </ul>
-                    </div>
+            <!-- Skills -->
+            <div>
+              <h4 class="resume-section-title">Skills</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
+                <div>
+                  <p class="font-semibold text-text-primary mb-1">Programming & Development</p>
+                  <p class="text-text-secondary leading-tight">Python, C/C++, JS, HTML/CSS, Git, Embedded Systems, PID Control</p>
                 </div>
+                <div>
+                  <p class="font-semibold text-text-primary mb-1">Modeling & Simulation</p>
+                  <p class="text-text-secondary leading-tight">MATLAB, MCNP, ANSYS Fluent, TCAD (EDA), RSoft, Zemax, SPICE, Excel (VBA), Power BI</p>
+                </div>
+                <div>
+                  <p class="font-semibold text-text-primary mb-1">Instrumentation & Fabrication</p>
+                  <p class="text-text-secondary leading-tight">CAD, 3D Printing, LIDAR/3D Metrology, FEA, GD&T, Cleanroom Microfabrication</p>
+                </div>
+                <div>
+                  <p class="font-semibold text-text-primary mb-1">Industrial</p>
+                  <p class="text-text-secondary leading-tight">Technical Reporting, Root Cause Analysis, FMEA, Project Management, Stakeholder Liaison, R&D Support</p>
+                </div>
+              </div>
             </div>
-        </section>
-
-        <!-- =================  PORTFOLIO SECTION  ================ -->
-        <section id="portfolioSection" class="page hidden animate-fade-in-up">
-            <div class="bg-white shadow-xl rounded-xl p-6 sm:p-8 md:p-10">
-                <h2 class="font-press-start text-2xl sm:text-3xl text-custom-blue mb-8">Portfolio</h2>
-                <nav id="categoryFilter" class="mb-8 flex flex-wrap gap-2 sm:gap-3"></nav>
-                <section class="projects grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8" id="projectsGrid"></section>
+            <!-- Work Experience -->
+            <div>
+              <h4 class="resume-section-title">Work Experience</h4>
+              <div class="resume-item">
+                <div class="resume-item-header">
+                  <div>
+                    <p class="resume-item-title">
+                      <strong>Applied Precision Inc</strong> | Precision Metrology and Engineering Intern | Vaughan, ON
+                    </p>
+                  </div>
+                  <p class="resume-item-date">Sept 2022 - Apr 2023</p>
+                </div>
+                <ul class="resume-item-bullets list-disc">
+                  <li>Operated high-precision structured light and LIDAR scanners (Leica RTC 360, Zeiss Comet L3D, Faro) for reverse engineering and quality inspection across automotive, aerospace, and medical sectors.</li>
+                  <li>Processed and aligned point cloud data to generate watertight CAD models using Geomagic Design X and PolyWorks.</li>
+                  <li>Supported tooling inspections and component design workflows by preparing hybrid 3D/2D outputs for additive manufacturing and inspection reports.</li>
+                  <li>Contributed to technical research and marketing documentation while supporting logistics, sales, and documentation tasks.</li>
+                </ul>
+              </div>
             </div>
-        </section>
+            <!-- Academic Projects -->
+            <div>
+              <h4 class="resume-section-title">Academic Projects</h4>
+              <div class="space-y-3">
+                <div class="resume-item">
+                  <div class="resume-item-header">
+                    <p class="resume-item-title">
+                      <strong>Autonomous Blackjack-Dealing System</strong> – Capstone Project
+                    </p>
+                    <p class="resume-item-date">Sep 2024 - Apr 2025</p>
+                  </div>
+                  <ul class="resume-item-bullets list-disc">
+                    <li>Engineered and built a fully autonomous, gesture-controlled Blackjack dealer from concept to final demonstration.</li>
+                    <li>Integrated a 3D-printed mechanical dispenser with an Arduino-controlled motor system that achieved an 85% single-card deal success rate.</li>
+                    <li>The system's Python-based software used a MediaPipe neural network to classify 'Hit'/'Stand' hand gestures with 99.88% accuracy and a separate YOLOv8 model to recognize dealt cards, with all game states displayed through a custom Tkinter GUI.</li>
+                  </ul>
+                </div>
+                <div class="resume-item">
+                  <div class="resume-item-header">
+                    <p class="resume-item-title">
+                      <strong>SOTI Inc, Mississauga, ON</strong> – Industry Consulting Project
+                    </p>
+                    <p class="resume-item-date">Sep 2024 - Dec 2024</p>
+                  </div>
+                  <ul class="resume-item-bullets list-disc">
+                    <li>Co-engineered an AI-driven autonomous client-engagement system to resolve lead-qualification and conversion inefficiencies for enterprise software firm SOTI, integrating business-process mapping with NLP-capable virtual agents.</li>
+                    <li>Built a data-backed cost & performance model (CAD $10k phased budget, KPIs, risk register); compared two architecture options with a weighted-scoring matrix and selected the higher-ROI solution for pilot rollout.</li>
+                    <li>Co-authored a client deck and executive presentation detailing system architecture, decision logic, risk mitigations and projected increases in leads and conversion (30% and 15% respectively), securing stakeholder approval.</li>
+                  </ul>
+                </div>
+                <div class="resume-item">
+                  <div class="resume-item-header">
+                    <p class="resume-item-title">
+                      <strong>PERL Silicon Solar Cell Fabrication & Characterization</strong>
+                    </p>
+                    <p class="resume-item-date">Sep 2024 - Dec 2024</p>
+                  </div>
+                  <ul class="resume-item-bullets list-disc">
+                    <li>Executed full-cycle fabrication (photolithography, doping, metallization) of a PERL silicon solar cell in a cleanroom environment , characterized performance under AM1.5G illumination (achieving 0.70% efficiency), and authored a scientific research paper detailing the methods, results, and analysis following McMaster Journal of Engineering Physics format.</li>
+                  </ul>
+                </div>
+                <div class="resume-item">
+                  <div class="resume-item-header">
+                    <p class="resume-item-title">
+                      <strong>Monte Carlo Reactor Simulation</strong> – Fuel Bundle Optimization
+                    </p>
+                    <p class="resume-item-date">Jan 2024 - Apr 2024</p>
+                  </div>
+                  <ul class="resume-item-bullets list-disc">
+                    <li>Modeled neutron transport and energy deposition in CANDU fuel bundles using MCNP; compared natural uranium, enriched uranium, MOX, and thorium fuels to optimize power output, flux uniformity, and thermal performance for core stability and efficiency; Delivered detailed technical recommendations in a formal presentation.</li>
+                  </ul>
+                </div>
+                <div class="resume-item">
+                  <div class="resume-item-header">
+                    <p class="resume-item-title">
+                      <strong>McMaster Nuclear Reactor</strong> – Nuclear Laboratory Series
+                    </p>
+                    <p class="resume-item-date">Sep 2023 - Dec 2023</p>
+                  </div>
+                  <ul class="resume-item-bullets list-disc">
+                    <li>Performed neutron activation, radiographic imaging, and attenuation experiments using HPGe, NaI(Tl), and BF₃/He-3 detectors; analyzed decay kinetics, cross-sections, and neutron-material interactions to validate shielding models and non-destructive inspection techniques.</li>
+                  </ul>
+                </div>
+                <div class="resume-item">
+                  <div class="resume-item-header">
+                    <p class="resume-item-title">
+                      <strong>PID-Controlled Thermoelectric Oven/Cooler</strong>
+                    </p>
+                    <p class="resume-item-date">Jan 2022 - Apr 2022</p>
+                  </div>
+                  <ul class="resume-item-bullets list-disc">
+                    <li>Designed & implemented closed-loop PID temperature control on a TI MSP430 Microcontroller (in C), interfacing an NTC thermistor via ADC and modulating a Peltier TEC with PWM; built a MATLAB GUI for UART-based live plotting, setpoint input, and data logging.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- About Page -->
+      <section id="about" class="page pt-20">
+        <div class="container mx-auto px-6 py-24 min-h-screen grid md:grid-cols-2 items-center gap-16">
+          <div id="about-canvas-container" class="w-full h-full min-h-[400px] md:min-h-0 cursor-grab active:cursor-grabbing"></div>
+          <div>
+            <h2 class="text-4xl font-bold mb-6">About Me</h2>
+            <div class="space-y-4 text-text-secondary leading-relaxed">
+              <p>I am a recent graduate from McMaster University, where I developed a broad, multidisciplinary engineering skillset alongside a strategic business perspective. My passion lies in tackling complex technical challenges across diverse, high-impact fields.</p>
+              <p>Throughout my projects, I've embraced versatility by applying fundamental physics and systems-level thinking to varied problems. From simulating CANDU reactor behavior to fabricating silicon solar cells, I enjoy integrating hardware, software, and advanced modeling to develop robust and innovative solutions.</p>
+              <p>This portfolio showcases my journey, skills, and projects. Feel free to explore and reach out if you'd like to connect!</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Skills Page -->
+      <section id="skills" class="page pt-20">
+        <div class="container mx-auto px-6 py-16 min-h-screen flex flex-col">
+          <div class="text-center mb-8">
+            <h2 class="text-4xl font-bold mb-2">Core Competencies</h2>
+            <p class="text-text-secondary">A fusion of hardware, software, and AI-driven analysis.</p>
+          </div>
+          <div class="flex-grow grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+            <div id="skills-list" class="lg:col-span-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-8 text-sm">
+              <!-- Skills list will be injected here -->
+            </div>
+            <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8 h-full">
+              <div class="w-full h-full min-h-[350px] md:min-h-[400px] cursor-grab active:cursor-grabbing p-4 border border-solid border-[color:var(--border-color)] rounded-lg bg-black/20">
+                <h3 class="text-center font-semibold text-accent-cyan mb-2">Software & AI Pipeline</h3>
+                <div id="skills-canvas-container-2" class="w-full h-[calc(100%-2rem)]"></div>
+              </div>
+              <div class="w-full h-full min-h-[350px] md:min-h-[400px] cursor-grab active:cursor-grabbing p-4 border border-solid border-[color:var(--border-color)] rounded-lg bg-black/20">
+                <h3 class="text-center font-semibold text-accent-cyan mb-2">Mechatronics & Hardware</h3>
+                <div id="skills-canvas-container" class="w-full h-[calc(100%-2rem)]"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Projects Page -->
+      <section id="projects" class="page pt-20">
+        <div class="container mx-auto px-6 py-16 h-screen flex flex-col">
+          <h2 class="text-4xl font-bold mb-6">Project Database</h2>
+          <div class="flex-grow flex min-h-0 bg-black/20 border border-solid border-[color:var(--border-color)] rounded-lg">
+            <div class="project-category-filter w-1/3 lg:w-1/4 border-r border-solid border-[color:var(--border-color)] overflow-y-auto pr-4 pl-2 py-2 space-y-1">
+              <!-- Vertical Category buttons will be injected here -->
+            </div>
+            <div id="project-grid" class="flex-grow p-4 overflow-y-auto grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+              <!-- Project cards will be injected here -->
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
-
-    <!-- =================  FOOTER  ================ -->
-    <footer class="bg-dark-text text-light-bg py-8 text-center mt-auto">
-        <div class="container mx-auto px-4">
-            <p class="font-press-start text-sm mb-2">&copy; <span id="currentYear"></span> Muqtadir Hussain. All Rights Reserved.</p>
-            <p class="text-xs">Designed with <span class="text-red-500">❤</span> and a touch of retro.</p>
-             <div class="mt-4 flex justify-center space-x-4">
-                <a href="https://www.linkedin.com/in/muqtadir66" target="_blank" rel="noopener noreferrer" class="text-light-bg hover:text-custom-blue transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-linkedin" viewBox="0 0 16 16"><path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854V1.146zm4.943 12.248V6.169H2.542v7.225h2.401zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248-.822 0-1.359.54-1.359 1.248 0 .694.521 1.248 1.327 1.248h.016zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016a5.54 5.54 0 0 1 .016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225h2.4z"/></svg>
-                </a>
-                <a href="https://github.com/muqtadir66" target="_blank" rel="noopener noreferrer" class="text-light-bg hover:text-custom-blue transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
-                </a>
-            </div>
-        </div>
+    <footer class="footer container mx-auto px-6 py-6 text-center text-text-secondary border-t border-solid border-[color:var(--border-color)]">
+      <div class="flex justify-center space-x-6 mb-4">
+        <a href="https://www.linkedin.com/in/muqtadir66" target="_blank" class="hover:text-accent-cyan transition-colors">LinkedIn</a>
+        <a href="https://github.com/muqtadir66" target="_blank" class="hover:text-accent-cyan transition-colors">GitHub</a>
+        <a href="mailto:muqti123@gmail.com" class="hover:text-accent-cyan transition-colors">Email</a>
+      </div>
+      <p>&copy; 2025 Muqtadir Hussain. All Rights Reserved.</p>
     </footer>
-
-    <button id="backToTopBtn" class="fixed bottom-5 right-5 bg-custom-blue text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition-all duration-300 opacity-0 translate-y-10">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-up-short" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z"/></svg>
-    </button>
-    
-    <!-- =================  DYNAMIC MEDIA MODAL (REBUILT)  ================ -->
-    <div class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[2000] p-4 hidden" id="mediaModal" onclick="closeMediaModal(event)">
-        <!-- Modal container. JS will add specific layout classes here. -->
-        <div id="modalContainer" class="relative">
-             <!-- Content will be injected by JS -->
+    <!-- Project Detail Modal -->
+    <div id="project-modal" class="modal-overlay fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+      <div class="modal-container rounded-lg shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+        <div class="p-4 flex justify-between items-center border-b border-solid border-[color:var(--border-color)]">
+          <h3 id="modal-title" class="text-xl font-bold text-text-primary"></h3>
+          <button id="modal-close-btn" class="text-3xl text-text-secondary hover:text-text-primary transition-colors">&times;</button>
         </div>
-
-        <!-- Static controls, positioned relative to the viewport -->
-        <button class="absolute top-3 right-3 text-gray-300 bg-black/50 hover:bg-black/75 p-2 rounded-full z-10 transition-colors" onclick="closeMediaModal(null, true)">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16"><path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/></svg>
-        </button>
-        <button class="modal-nav absolute top-1/2 left-2 -translate-y-1/2 text-white bg-black/40 hover:bg-black/60 p-2 rounded-full cursor-pointer transition-colors" onclick="prevMedia()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/></svg>
-        </button>
-        <button class="modal-nav absolute top-1/2 right-2 -translate-y-1/2 text-white bg-black/40 hover:bg-black/60 p-2 rounded-full cursor-pointer transition-colors" onclick="nextMedia()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/></svg>
-        </button>
+        <div id="modal-content" class="p-6 overflow-y-auto"></div>
+      </div>
     </div>
-
-    <div class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[2000] p-4 hidden" id="resumeModal">
-        <div class="bg-white rounded-lg shadow-2xl w-full max-w-4xl h-[90vh] flex flex-col relative overflow-hidden">
-            <div class="p-2 border-b bg-gray-50 flex justify-end items-center">
-                <a href="media/Muqtadir's Resume.pdf" download="Muqtadir_Hussain_Resume.pdf" class="inline-flex items-center gap-2 bg-custom-blue text-white font-sans text-xs font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
-                      <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
-                      <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
-                    </svg>
-                    Download
-                </a>
-                <button class="text-gray-500 hover:text-black p-2 rounded-full ml-2" onclick="closeResumeModal()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16"><path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/></svg>
-                </button>
-            </div>
-            <div class="flex-grow overflow-auto" id="resumeContent"><embed src="media/Muqtadir's Resume.pdf" type="application/pdf" class="w-full h-full" /></div>
-        </div>
-    </div>
-
     <script>
-        // --- UTILITY FUNCTIONS ---
-        const qs = (sel) => document.querySelector(sel);
-        const qsa = (sel) => document.querySelectorAll(sel);
-        
-        // --- DOM ELEMENT DECLARATIONS ---
-        const landing = qs("#landing");
-        const enterBtn = qs("#enterBtn");
-        const mainNavButtons = qsa("#mainNav button");
-        const pages = qsa(".page");
-        const resumeBtn = qs("#resumeBtn");
-        const resumeModal = qs("#resumeModal");
-        const categoryFilterContainer = qs("#categoryFilter");
-        const projectsGrid = qs("#projectsGrid");
-        const backToTopBtn = qs("#backToTopBtn");
-        const canvas = qs('#landingCanvas');
-        const mediaModal = qs("#mediaModal");
-        const modalContainer = qs("#modalContainer");
-        const ctx = canvas.getContext('2d');
-
-        // --- STATE VARIABLES ---
-        let particlesArray;
-        let currentMediaIndex = 0;
-        let currentMediaArray = [];
+      document.addEventListener('DOMContentLoaded', function() {
+        // --- DATA ---
         const projects = [
             {
+                id: 'blackjack-dealer',
                 title: "Autonomous Blackjack-Dealing System – Engineering Physics Capstone Project",
                 category: "Capstone Projects",
                 tags: ["Raspberry Pi", "OpenCV", "Python", "Mechatronics", "AI Dealer"],
                 bullets: ["Engineered a fully autonomous Blackjack dealer integrating mechanical actuation, computer vision, and game logic control to simulate human-like card dealing and gameplay interaction.","Designed and built a mechanical card dispensing system using precision-aligned roller pairs driven by DC motors, achieving reliable single-card separation and directional ejection with feedback tuning to minimize jamming and misfeeds.","Developed a Python-based computer vision module using OpenCV to recognize user hand gestures (e.g., “Hit”, “Stand”) with real-time video input, achieving robust classification under varied lighting and background conditions.","Programmed an AI dealer algorithm in Python to handle dynamic deck reshuffling, betting logic, and real-time decision-making, interfaced with gesture recognition and mechanical dispensing systems.","Integrated all subsystems on a Arduino Mega 2560 microcontroller platform, establishing synchronized control across hardware (motors, camera), software (game state logic), and user interface layers.","Conducted performance testing and system tuning to ensure reliable game flow and human interaction, refining grip materials and motor control parameters to prevent stalling and double feeding.","Delivered full technical documentation and demonstration; showcased the system at the final project expo, highlighting cross-disciplinary integration of mechatronics, embedded systems, and AI-driven interaction.",],
-                media: [{ type: "pdf", src: "media/BlackJack Orama - Autonomous BlackJack Dealer.pdf", name: "BlackJack Orama - Autonomous BlackJack Dealer" },{ type: "image", src: "media/BlackJack Orama.jpg", name: "BlackJack Orama" },],
-                aiExplanation: "This capstone project is the ultimate fusion of my skills: mechanical design for the card dealer, computer vision (OpenCV) to see player gestures, and embedded programming (Python on a Raspberry Pi) to act as the brain. I built a physical robot that could act as a Blackjack dealer, showcasing a complete mechatronic system from concept to a functional, interactive prototype."
+                media: [{ type: "pdf", src: "media/BlackJack Orama - Autonomous BlackJack Dealer.pdf", name: "Technical Report" }]
             },
             {
+                id: 'lead-conversion',
                 title: "AI-Based Lead Conversion System Design – SOTI Inc -Engineering & Management Capstone Project",
                 category: "Capstone Projects",
                 tags: ["Sales", "NLP", "Voice Agent", "CRM", "KPIs", "System Architecture"],
                 bullets: ["Engineered an AI-driven autonomous client engagement system to resolve lead qualification and conversion inefficiencies for enterprise software firm SOTI, integrating business process mapping with NLP-capable virtual agents.","Applied systems engineering principles to model input/output workflows for sales funnel automation; designed technical process flowcharts for inbound validation, triage, and outbound engagement.","Conducted data-driven performance modeling using historical lead datasets to define qualification thresholds, interaction logic, and routing protocols for decision-tree–based voice agents.","Developed a phased implementation plan including a $10k cost model, performance KPIs, risk analysis (risk register + mitigation), and API integration scope for CRM and telephony platforms.","Delivered full-system architecture documentation, comparative evaluation of two solution frameworks using weighted scoring matrices, and a stakeholder-aligned deployment timeline.","Presented technical recommendations and final solution strategy to industry executives; submitted a formalized client report detailing design decisions, cost-benefit analysis, and ROI projection.",],
-                media: [{ type: "pdf", src: "media/SOTI Inc – Client Deck.pdf", name: "SOTI Inc – Client Deck" },],
-                aiExplanation: "This capstone project was a real-world consulting engagement where I designed a technical solution for a business problem. I architected an AI-powered system to automate sales lead qualification for a major software company. This involved process modeling, data analysis, and designing the integration points with existing systems like CRMs. It's a prime example of applying an engineering mindset to improve business efficiency."
+                media: [{ type: "pdf", src: "media/SOTI Inc – Client Deck.pdf", name: "Client Deck" }]
             },
             {
+                id: 'perl-cell',
                 title: "PERL Solar Cell Fabrication & Characterization",
-                category: "Semiconductor Devices & Fabrication",
+                category: "Semiconductor Devices",
                 tags: ["PERL", "Cleanroom", "KOH Etch", "Photolithography", "I–V"],
                 bullets: ["Fabricated a Passivated Emitter and Rear Locally Diffused (PERL) silicon solar cell in a cleanroom environment, executing full photolithography, doping, etching, and metallization processes on p-type wafers.","Developed inverted pyramid texturing via anisotropic KOH etching and spin-coated phosphorus dopant (P509) followed by a high-temperature drive-in to form selective emitter regions.","Tuned SiO₂ anti-reflective coating to optimal quarter-wavelength thickness (≈84 nm) using iterative HF etching guided by optical modeling.","Patterned and sputtered front Ti/Ag contacts and full-area Al BSF rear contact using lift-off and sonication, minimizing edge recombination and improving carrier collection.","Characterized device performance under AM1.5G illumination and dark conditions, extracting VOC, ISC, FF, η, Rs, and Rsh from I–V curves and comparing with reference cells.","Achieved peak efficiency of 0.70% in best-performing cell; quantified contact resistance (ρc ≈ 0.34 Ω·cm²) from resistance vs. pad spacing analysis using linear extrapolation.",],
-                media: [{ type: "pdf", src: "media/PERL Solar Cell Fabrication (MJEP Paper).pdf", name: "PERL Paper.pdf" },{ type: "image", src: "media/perl_cell_image.png", name: "PERL Cell.png" },],
-                aiExplanation: "This project took me into the cleanroom to build a high-efficiency solar cell from a bare silicon wafer. It involved a sequence of precise, multi-step fabrication processes like photolithography, chemical etching, and metal deposition. Finally, I tested the finished device to measure its performance. This demonstrates hands-on experience in the entire semiconductor fabrication and characterization cycle."
+                media: [{ type: "pdf", src: "media/PERL Solar Cell Fabrication (MJEP Paper).pdf", name: "Research Paper" }]
             },
             {
+                id: 'tcad-sim',
                 title: "TCAD Simulation of Silicon Solar Cell Using Sentaurus",
-                category: "Semiconductor Devices & Fabrication",
+                category: "Semiconductor Devices",
                 tags: ["Sentaurus", "TCAD", "Drift-Diffusion", "EQE", "Optimization"],
                 bullets: ["Designed and simulated a full 3D silicon solar cell structure in Sentaurus Workbench, modeling layer growth, dopant diffusion, oxide formation, and metal contact definition.","Implemented phosphorus diffusion and junction formation via Fermi-Dirac statistics and Gaussian ion profiles to replicate lab-fabricated device architecture.","Applied optical generation profiles using TMM modeling for AM1.5G illumination; solved coupled Poisson and drift-diffusion equations with recombination (SRH, Auger) and mobility models.","Generated I–V and external quantum efficiency (EQE) curves to assess device output; achieved simulated VOC ≈ 0.37 V and efficiency ≈ 9.5%, identifying recombination losses near the front junction.","Evaluated electric field, carrier lifetime, and generation maps in spatially resolved outputs to isolate limitations in contact design and surface passivation strategies.","Demonstrated capability to use TCAD for device optimization, proposing modifications to improve fill factor and reduce front contact shading losses.",],
-                media: [{ type: "pdf", src: "media/TCAD Simulation - Solar Cell Fabrication and Characterization (Sentaurus Workbench).pdf", name: "TCAD Report.pdf" },{ type: "video", src: "media/tcad_simulation.mp4", name: "TCAD Sim.mp4" },],
-                aiExplanation: "This project is the digital twin to fabricating a real solar cell. Using industry-standard TCAD software, I built a virtual 3D model of a solar cell and simulated its behavior at the physics level. This allowed me to analyze its performance, identify bottlenecks like recombination losses, and test design improvements—all before ever stepping into a cleanroom. It showcases my ability to use advanced simulation for device optimization."
+                media: [{ type: "pdf", src: "media/TCAD Simulation - Solar Cell Fabrication and Characterization (Sentaurus Workbench).pdf", name: "Simulation Report" }]
             },
             {
+                id: 'reactor-sim',
                 title: "Monte Carlo Reactor Simulation – Fuel Bundle Optimization for CANDU Reactors",
-                category: "Nuclear Science & Engineering",
+                category: "Nuclear Engineering",
                 tags: ["MCNP", "CANDU", "Fuel Bundle", "Thorium", "MOX"],
                 bullets: ["Simulated neutron transport and energy deposition in CANDU bundles using MCNP, analyzing performance of natural uranium, enriched uranium, MOX, and thorium fuels.","Demonstrated a significant power output increase using enriched uranium and MOX fuels over natural uranium, while maintaining flux symmetry and core stability.","Identified the outer-ring thorium configuration as optimal, delivering the most uniform radial power distribution due to U-233 breeding and peripheral neutron absorption.","Quantified fission power density and energy deposition using MCNP tally cards; results used to assess thermal performance, flux peaking factors, and bundle viability.","Delivered detailed technical recommendations on bundle geometry and material use for enhancing CANDU reactor efficiency in a formal report and oral defense.",],
-                media: [{ type: "pdf", src: "media/candu_mc_report.pdf", name: "CANDU MC Report.pdf" },{ type: "image", src: "media/flux_map.png", name: "Flux Map.png" },],
-                aiExplanation: "This project involved using a sophisticated simulation tool (MCNP) to model the heart of a CANDU nuclear reactor. By simulating billions of individual neutron interactions, I was able to test different fuel configurations—including advanced thorium and MOX fuels—to find the optimal design for uniform power distribution and efficiency. It's a high-level example of using computational physics for nuclear reactor optimization."
+                media: [{ type: "pdf", src: "media/candu_mc_report.pdf", name: "MCNP Report" }]
             },
             {
+                id: 'reactor-ops',
                 title: "Nuclear Reactor Operation & Simulation – CANDU-9 Systems",
-                category: "Nuclear Science & Engineering",
+                category: "Nuclear Engineering",
                 tags: ["CANDU Sim.", "Xenon Transient", "Point-Kinetics", "Control Rods"],
                 bullets: ["Operated a CANDU-9 reactor simulator to perform full-cycle startup, shutdown, and transient operations including power maneuvers, poison override, and turbine trips.","Simulated xenon transients using self-developed MATLAB models; predicted 135Xe concentration and reactivity impacts during power changes and recovery scenarios.","Analyzed and validated core behavior under abnormal conditions (e.g., step-back, coolant loss, shutdown system actuation) by integrating feedback control mechanisms and reactivity limits.","Modeled neutron kinetics and reactivity feedback effects using point-kinetics equations with delayed neutron precursors; evaluated control rod insertion strategies under changing flux.","Final project involved full simulation of xenon buildup/burnout cycles and their influence on long-term reactivity margins and plant stability under varied load demands.",],
-                media: [{ type: "pdf", src: "media/candu9_transients.pdf", name: "CANDU9 Transients.pdf" },{ type: "video", src: "media/xenon_sim.mp4", name: "Xenon Sim.mp4" },],
-                aiExplanation: "This project demonstrates my understanding of nuclear reactor dynamics and control. Using a professional-grade simulator, I managed the entire lifecycle of a CANDU-9 reactor, from startup to handling complex transient events. A key part was modeling 'xenon poisoning'—a critical stability challenge in reactors—and predicting its effect on the core, showcasing a deep understanding of operational nuclear physics."
+                media: [{ type: "pdf", src: "media/candu9_transients.pdf", name: "Transients Analysis" }]
             },
             {
+                id: 'nuclear-lab',
                 title: "Nuclear Laboratory Series – McMaster Nuclear Reactor",
-                category: "Nuclear Science & Engineering",
+                category: "Nuclear Engineering",
                 tags: ["HPGe", "NaI(Tl)", "BF₃", "Activation", "Radiography"],
                 bullets: ["Conducted numerous reactor-based experiments involving radiation detection, isotope identification, and neutron-material interactions, using HPGe, NaI(Tl), and BF₃/He-3 detectors.","Modeled radioactive decay curves from neutron-activated samples; computed decay constants and half-lives with full uncertainty analysis, confirming isotope identity as ³⁸Cl.","Measured neutron attenuation through various materials; calculated macroscopic cross-sections via semi-log regression, analyzing scattering effects and validating models.","Captured high-resolution neutron radiographs of internal components using thermal beams; analyzed image contrast and L/D ratio using ASTM E545 standards and ImageJ.","Demonstrated applications in non-destructive testing, shielding analysis, and fuel inspection through experimental interpretation and technical reporting.",],
-                media: [{ type: "pdf", src: "media/nuclear_lab_report.pdf", name: "Lab Report.pdf" },{ type: "image", src: "media/neutron_radiograph.jpg", name: "Radiograph.jpg" },],
-                aiExplanation: "This series of labs provided invaluable hands-on experience with a real nuclear reactor. I went beyond theory to perform experiments like identifying unknown radioactive isotopes by their unique energy signatures and using neutron beams to 'x-ray' objects. It's a demonstration of applying nuclear physics principles for practical applications like materials analysis and non-destructive testing."
+                media: [{ type: "pdf", src: "media/nuclear_lab_report.pdf", name: "Lab Report" }]
             },
             {
+                id: 'cubesat',
                 title: "CubeSat Mission Design & Systems Engineering",
                 category: "Systems Engineering",
                 tags: ["CubeSat", "Systems Eng.", "Orbital Mech.", "Trade Study"],
                 bullets: ["Applied the systems engineering lifecycle to develop a conceptual CubeSat mission (MCSPI) aimed at real-time parking surveillance using satellite imaging.","Defined high-level mission and system requirements, operational concepts, and interface design for imaging, data relay, and ticketing systems based on stakeholder needs and functional constraints (budget < $100k, 5-year mission lifetime).","Modeled orbital mechanics and pass scheduling to optimize imaging coverage of multiple urban campuses; proposed autonomous AI-based infraction detection and communication architecture.","Completed subsystem trade studies across power, propulsion, communications, and control systems to evaluate feasibility and justify design decisions.","Demonstrated multidisciplinary integration by designing a full mission timeline, requirements traceability matrix, and spacecraft data flow from LEO downlink to enforcement action.",],
-                media: [{ type: "pdf", src: "media/cubesat_design_report.pdf", name: "CubeSat Report.pdf" },{ type: "image", src: "media/cubesat_block_diagram.png", name: "Block Diagram.png" },],
-                aiExplanation: "This project was an exercise in holistic systems engineering. The goal was to design a complete satellite mission—from the orbital mechanics that dictate where it can look, to the power, communications, and imaging subsystems on board. It required making trade-offs between different components to meet an overall mission goal within budget, a core challenge in any complex engineering project."
+                media: [{ type: "pdf", src: "media/cubesat_design_report.pdf", name: "Design Report" }]
             },
             {
+                id: 'isoc',
                 title: "Final Project – Optical Inter-Satellite Communication System",
                 category: "Optics & Photonics",
                 tags: ["Grating Coupler", "RSoft", "BeamPROP", "Gaussian Beam", "ISOC"],
                 bullets: ["Designed a planar silicon grating coupler for space-based optical links; simulated input coupling efficiency (η₁) using RSoft FemSIM and BeamPROP.","Modeled output beam divergence and receiving aperture overlap efficiency (η₂) using MATLAB-based Gaussian beam propagation and overlap integrals.","Achieved total system efficiency η ≈ 45% through angular optimization, taper design, and Gaussian matching.","Presented full design architecture, simulation results, and improvement strategies in a technical final report and presentation.",],
-                media: [{ type: "pdf", src: "media/inter_satellite_report.pdf", name: "Inter-Satellite Report.pdf" },{ type: "image", src: "media/grating_coupler_sim.png", name: "Grating Sim.png" },],
-                aiExplanation: "This project tackled a futuristic challenge: designing a system for satellites to communicate using lasers. My focus was on the grating coupler—the tiny on-chip antenna that launches light from the chip into space. Using simulation tools like RSoft and MATLAB, I optimized its design to maximize the efficiency of this optical link, demonstrating skills in both photonic component design and system-level analysis."
+                media: [{ type: "pdf", src: "media/inter_satellite_report.pdf", name: "System Report" }]
             },
             {
+                id: 'photonics-lab',
                 title: "Integrated Photonics Laboratory – Silicon Device Characterization",
                 category: "Optics & Photonics",
                 tags: ["Silicon Photonics", "Ring Resonator", "PDL", "Probe Station"],
                 bullets: ["Used a fiber-optic probe station and tunable laser source to characterize silicon photonic devices across multiple lab modules.","Measured polarization-dependent loss (PDL) and insertion loss in directional couplers; extracted coupling ratios and confirmed symmetry.","Characterized spectral filtering and free spectral range (FSR) of ring resonators; validated results using MATLAB peak detection and curve fitting.","Evaluated waveguide-coupled photodetector behavior under modulated signals and extracted electrical response characteristics.",],
-                media: [{ type: "pdf", src: "media/photonic_lab_report.pdf", name: "Lab Report.pdf" },{ type: "image", src: "media/ring_resonator.png", name: "Ring Resonator.png" },],
-                aiExplanation: "This lab work involved using high-precision instruments to test real silicon photonic chips. I characterized devices like ring resonators—tiny racetrack-like structures that filter light—and measured their performance characteristics. This project showcases my hands-on experience with optical probe stations and my ability to analyze experimental data from integrated photonic circuits."
+                media: [{ type: "pdf", src: "media/photonic_lab_report.pdf", name: "Lab Report" }]
             },
             {
+                id: 'assemblr',
                 title: "Innovation Consulting & Product Development – Assemblr App",
                 category: "Business & Consulting",
                 tags: ["Flutter", "Node.js", "MongoDB", "Stripe", "Matchmaking"],
                 bullets: ["Co-developed Assemblr, a data-driven mobile platform enabling personalized matchmaking for in-person and virtual social events, addressing challenges in community-building and niche event discovery.","Conducted full-cycle business innovation analysis including opportunity identification, market segmentation, IP and competitor analysis, and strategic value proposition refinement for a dual-sided platform (users and businesses).","Led technical feasibility and system architecture planning for a custom-built mobile app using Flutter (frontend), JavaScript/Node.js (backend), and MongoDB, integrating OAuth authentication and Stripe payment gateways.","Designed a proprietary event matchmaking algorithm based on user preferences, availability, and behavioral data to optimize social compatibility and event recommendations.","Produced financial projections with an NPV of $13.71M and expected year-5 income of $2.5M; created a full investor pitch including MVP scope, risk assessment, sprint-based agile development plan, and business model canvas.","Delivered a final business proposal and feasibility study aimed at securing $80,000 in seed funding for a 5% equity stake.",],
-                media: [{ type: "pdf", src: "media/assemblr_pitch.pdf", name: "Assemblr Pitch.pdf" },{ type: "image", src: "media/assemblr_ui.png", name: "Assemblr UI.png" },],
-                aiExplanation: "This project demonstrates my ability to think like an entrepreneur. We didn't just design an app; we built a complete business case from the ground up. I was involved in everything from identifying the market need and designing the technical architecture to creating a full financial model and investor pitch. It's a showcase of bridging the gap between a technical product and a viable business."
+                media: [{ type: "pdf", src: "media/assemblr_pitch.pdf", name: "Pitch Deck" }]
             },
             {
+                id: 'marketing-consulting',
                 title: "Marketing Strategy Consulting Project – OneZo Tapioca Hamilton",
                 category: "Business & Consulting",
                 tags: ["Marketing Audit", "Competitive Analysis", "ROI", "Strategy"],
                 bullets: ["Conducted a full-cycle marketing audit and competitive analysis for a real-world client in the food and beverage sector, focusing on pricing, promotions, delivery strategy, and customer segmentation.","Identified marketing challenges including low profitability from promotions, limited digital presence, and operational inefficiencies; used data-driven methods to assess root causes.","Proposed and justified a dual-strategy solution involving an incremental volume discount model and Uber Eats digital ad optimization, supported by ROI calculations and a decision matrix.","Created a phased implementation roadmap that included staff training, budget reallocation, and customer communication strategy to increase revenue while maintaining marketing costs.","Delivered both interim and final presentations to stakeholders and submitted a 35+ page marketing plan supported by market trend data, segmentation analysis, and financial impact projections.",],
-                media: [{ type: "pdf", src: "media/marketing_plan.pdf", name: "Marketing Plan.pdf" },{ type: "image", src: "media/market_analysis_chart.png", name: "Analysis Chart.png" },],
-                aiExplanation: "This project highlights my business acumen and analytical skills. Working with a real client, I performed a top-to-bottom analysis of their marketing efforts, using data to identify what wasn't working. The final deliverable wasn't just a report; it was a concrete, actionable strategy with clear ROI projections, demonstrating my ability to translate data into sound business decisions."
+                media: [{ type: "pdf", src: "media/marketing_plan.pdf", name: "Marketing Plan" }]
             },
             {
+                id: 'range-finder',
                 title: "Ultrasonic Range Finder – Modular Distance Measurement System",
-                category: "Embedded Systems & Controls/Instrumentation",
+                category: "Embedded Systems",
                 tags: ["Transceiver", "Oscilloscope", "Multisim (SPICE)", "Analog", "Digital Logic"],
                 bullets: ["Designed and constructed a 4-module ultrasonic rangefinder using piezoelectric transceivers, analog amplification, digital logic, and 7-segment display systems, targeting centimeter-scale distance readings from 10–99 cm.","Generated and processed high-frequency acoustic pulses using astable 555 timers (40 kHz & 1 Hz), SR latch logic, and comparator-based waveform digitization.","Simulated circuit modules in Multisim, analyzed signal propagation and timing, and performed iterative refinement using oscilloscopes and breadboards.","Integrated op-amp stages for signal conditioning and applied BCD counters with 7-segment decoders for real-time digital display output.","Developed a full technical report (5-week rolling submission) with circuit schematics, timing diagrams, simulation results, uncertainty analysis, and lessons learned.",],
-                media: [{ type: "image", src: "media/Ultrasonic Range Finder Modules.jpg", name: "Modules.jpg" },{ type: "pdf", src: "media/The Ultrasonic Range Finder (Report).pdf", name: "Report.pdf" },],
-                aiExplanation: "This project was a hands-on exploration of analog and digital circuit design to create a practical measurement tool. It's essentially building sonar on a breadboard. The system sends out an ultrasonic 'ping,' listens for the echo, and calculates the distance. It involved everything from generating the initial signal and amplifying the faint return echo to converting the time-of-flight into a number on a display."
+                media: [{ type: "pdf", src: "media/The Ultrasonic Range Finder (Report).pdf", name: "Technical Report" }]
             },
             {
+                id: 'pid-cooler',
                 title: "PID-Controlled Thermoelectric Oven/Cooler",
-                category: "Embedded Systems & Controls/Instrumentation",
+                category: "Embedded Systems",
                 tags: ["MSP430", "C", "PID", "PWM", "TEC", "MATLAB", "GUI"],
                 bullets: ["Designed and implemented a closed-loop PID temperature control system using a Texas Instruments MSP430 microcontroller and a thermoelectric cooler (TEC) based on the Peltier effect.","Programmed real-time control logic in C, integrating ADC input from an NTC thermistor and generating PWM signals to modulate TEC output.","Developed a MATLAB GUI for serial communication over UART, enabling live temperature plotting, setpoint input, and data logging.","Applied PID tuning (Ziegler-Nichols method) and implemented anti-windup strategies, integral error clamping, and derivative smoothing through custom filtering.","Built complete firmware and hardware architecture; validated system response through simulated loop control despite serial communication limitations in the final prototype.",],
-                media: [{ type: "pdf", src: "media/oven_cooler_report.pdf", name: "Report.pdf" },{ type: "image", src: "media/oven_cooler_schematic.jpg", name: "Schematic.jpg" },],
-                aiExplanation: "This project showcases a classic engineering control problem: precisely maintaining temperature. By programming a microcontroller with a PID algorithm—the brains of the operation—I built a system that could intelligently heat or cool a surface. It's a great example of bridging the gap between digital logic (code) and physical-world outcomes (temperature), a core skill in automation and mechatronics."
+                media: [{ type: "pdf", src: "media/oven_cooler_report.pdf", name: "Design Report" }]
             },
             {
+                id: 'prosthetic',
                 title: "Forefinger-Thumb Prosthetic Design",
                 category: "Mechanical & CAD Design",
                 tags: ["Prosthetics", "Autodesk Inventor", "Gear Train", "3D-Printing", "Dynamics"],
                 bullets: ["Designed and prototyped a functional prosthetic gripping mechanism in a 4-person team, driven by a custom-designed gear train using an assigned 21 RPM input motor to achieve 0.20 RPS opposing rotational motion in finger and thumb joints.","Modeled parts and full assembly in Autodesk Inventor, applying constraints and running dynamic simulations to validate contact motion within a 30×30 mm workspace.","Created complete engineering drawing package including ANSI-standard working drawings, assembly diagrams, and bill of materials for 3D-printed components.","Produced and demonstrated a fully assembled 3D-printed prototype, verified through motion testing and oral technical defense.",],
-                media: [{ type: "image", src: "media/prosthetic_render.jpg", name: "Render.jpg" },{ type: "pdf", src: "media/prosthetic_specs.pdf", name: "Specs.pdf" },],
-                aiExplanation: "More than just a CAD model, this was a deep dive into mechanical design and kinematics. We engineered a gear system from scratch to translate simple motor rotation into a delicate, precise gripping motion. This project demonstrates the full design cycle: from theoretical calculations and digital simulation in Autodesk Inventor to a tangible, 3D-printed prototype that proves the concept works."
+                media: [{ type: "pdf", src: "media/prosthetic_specs.pdf", name: "Specifications" }]
             },
             {
+                id: 'biophotonics',
                 title: "Biophotonics Literature Project – DO-SRS Imaging of Aging Metabolism",
                 category: "Optics & Photonics",
                 tags: ["DO-SRS", "Raman", "Metabolism", "Spectroscopy"],
                 bullets: ["Researched and presented on Deuterium Oxide–Probed Stimulated Raman Scattering (DO-SRS) as a non-invasive imaging technique for visualizing metabolic changes in aging fruit flies (Drosophila).","Evaluated the optical principles of Raman scattering, laser-sample interaction, and vibrational spectroscopy used to monitor lipid and protein turnover in biological tissues.","Analyzed the benefits of DO-SRS for label-free imaging and its potential for integration with multimodal microscopy platforms in biomedical research.","Assessed the system’s limitations (signal-to-noise ratio, imaging depth, photobleaching) and proposed engineering solutions including optical design refinements and hybrid imaging strategies.","Co-authored a full-length technical report and co-presented findings via video presentation and Q&A session.",],
-                media: [{ type: "pdf", src: "media/bio_report.pdf", name: "Bio Report.pdf" },{ type: "image", src: "media/dorss_image.png", name: "DO-SRS Image.png" },],
-                aiExplanation: "This project demonstrates my ability to dive deep into cutting-edge scientific research. I analyzed a state-of-the-art, laser-based imaging technique called DO-SRS, which allows scientists to watch metabolism happen in real-time without using invasive labels. My role was to deconstruct the technology, evaluate its strengths and weaknesses, and propose engineering solutions to improve it."
+                media: [{ type: "pdf", src: "media/bio_report.pdf", name: "Literature Review" }]
             },
             {
+                id: 'optical-labs',
                 title: "Optical Systems and Imaging Labs",
                 category: "Optics & Photonics",
                 tags: ["Zemax", "Lens Design", "Gas Sensor", "OCT", "MATLAB"],
                 bullets: ["Designed and optimized a singlet camera lens using Zemax OpticStudio; minimized RMS spot size and corrected monochromatic aberrations through curvature, thickness, and material optimization.","Simulated an absorption-based optical gas sensor to detect greenhouse gases; modeled multi-pass Herriott cell configurations and evaluated spectral absorption in MATLAB.","Modeled a non-sequential Optical Coherence Tomography (OCT) system for retina imaging; analyzed interference fringe patterns, coherence length, and axial resolution to assess imaging fidelity.",],
-                media: [{ type: "image", src: "media/zemax_design.png", name: "Zemax Design.png" },{ type: "video", src: "media/oct_simulation.mp4", name: "OCT Sim.mp4" },],
-                aiExplanation: "This lab series was about wielding light. Using industry-standard software like Zemax, I designed a camera lens from the ground up, optimizing its shape to create sharper images. I also simulated advanced systems like an optical gas sensor and an OCT imager for medical applications. This work showcases my ability to model and analyze how light behaves in complex photonic systems."
+                media: [{ type: "image", src: "media/zemax_design.png", name: "Zemax Design" }]
             },
             {
+                id: 'iot-systems',
                 title: "Sensor Instrumentation & IoT Systems",
-                category: "Embedded Systems & Controls/Instrumentation",
+                category: "Embedded Systems",
                 tags: ["Arduino", "Transducers", "Hall effect", "Smart Systems", "IoT", "Adafruit Cloud"],
                 bullets: ["Characterized analog and digital sensors including Hall effect, thermistors, thermocouples, phototransistors, and IR reflectivity sensors; extracted signal behavior using real-time data acquisition and curve fitting in Arduino and MATLAB.","Evaluated human-machine interface devices (rotary encoders, joysticks) and pulse sensors (KY-039) for physiological monitoring; implemented analog filtering and noise mitigation to compute BPM accurately.","Designed Auto Gard, a smart Arduino-based IoT garden system integrating soil moisture, pH, temperature, humidity, and light sensors with wireless communication (ESP8266); enabled real-time plant environment monitoring and automated response logic.","Programmed control logic and interfaced with Adafruit IoT cloud platform for remote logging, environmental threshold triggers, and user alerts.",],
-                media: [{ type: "image", src: "media/iot_dashboard.jpg", name: "IoT Dashboard.jpg" },{ type: "pdf", src: "media/iot_report.pdf", name: "IoT Report.pdf" },],
-                aiExplanation: "This project demonstrates the full stack of an Internet of Things (IoT) system. I started with raw sensors, characterized their electrical signals, and then built a 'smart garden' that could monitor its own environment. The final step was connecting it to the cloud, allowing for remote data logging and alerts. It's a practical example of creating an intelligent, data-driven device."
+                media: [{ type: "image", src: "media/iot_dashboard.jpg", name: "IoT Dashboard" }]
             },
             {
+                id: 'fluid-mechanics',
                 title: "Fluid Mechanics and Heat Transfer Laboratory Projects",
                 category: "Fluid & Thermal Analysis",
                 tags: ["ANSYS Fluent", "Flow Systems", "Venturi", "Heat Exchanger", "Reynolds"],
                 bullets: ["Conducted experimental and simulation-based analysis of internal and external flow systems, including Venturi tubes, pipe networks, and bluff body drag, applying Bernoulli’s principle, Darcy-Weisbach equation, and dimensional analysis.","Used ANSYS Fluent to simulate laminar and turbulent flow regimes; validated mesh sensitivity and turbulence models against physical measurements from lab setups.","Modeled pressure distribution and velocity profiles in pipe systems under varying Reynolds numbers; compared simulation results with experimental manometer readings and derived friction factor plots.","Investigated forced convection and heat exchanger performance; implemented energy balance equations to calculate heat transfer coefficients and effectiveness of parallel and counterflow exchangers.","Simulated transient and steady-state conduction scenarios in composite materials using ANSYS to visualize temperature gradients and thermal flux, correlating with analytical and empirical results.","Authored detailed engineering reports including uncertainty analysis, data regression (linearized heat loss models), and interpretation of non-ideal flow effects in real-world systems.",],
-                media: [{ type: "pdf", src: "media/fluid_mechanics_report.pdf", name: "Fluid Report.pdf" },{ type: "image", src: "media/heat_transfer_plot.png", name: "Heat Plot.png" },],
-                aiExplanation: "This project combined physical experiments with powerful computer simulations (using ANSYS Fluent) to analyze how fluids move and heat is transferred. I validated my digital models against real-world data from things like Venturi tubes and heat exchangers. This demonstrates a key engineering skill: using simulation as a tool to predict and understand complex physical phenomena."
+                media: [{ type: "pdf", src: "media/fluid_mechanics_report.pdf", name: "Lab Report" }]
             },
             {
+                id: 'semiconductor-labs',
                 title: "Semiconductor Device Characterization Labs",
-                category: "Semiconductor Devices & Fabrication",
+                category: "Semiconductor Devices",
                 tags: ["Photodetector", "Solar Cell", "Bandgap", "Hall Effect", "I–V"],
                 bullets: ["Measured and analyzed key device parameters for photodetectors, LEDs, and solar cells through hands-on experiments using calibrated optics and electrical instrumentation.","Determined the bandgap of GaP using spectral filtering and photodetector response curves; validated results against theoretical absorption edges.","Calculated carrier lifetime and base transit times in phototransistors by analyzing LED-driven transient waveforms on an oscilloscope; extracted recombination dynamics.","Investigated Hall sensor response to rotating magnetic fields, confirming voltage polarity and amplifier gain behavior under field orientation changes.","Evaluated I–V characteristics of silicon solar cells under red and white LED illumination; quantified performance metrics including fill factor and relative efficiency, and identified limitations in parallel cell configurations.",],
-                media: [{ type: "image", src: "media/sem_lab_setup.jpg", name: "Lab Setup.jpg" },{ type: "pdf", src: "media/sem_lab_report.pdf", name: "Lab Report.pdf" },],
-                aiExplanation: "This series of labs was about understanding the fundamental building blocks of modern electronics. By physically testing devices like solar cells, LEDs, and photodetectors, I measured their core properties—like efficiency and response time. It’s a showcase of my ability to perform detailed electrical characterization and connect experimental data to the underlying semiconductor physics."
+                media: [{ type: "pdf", src: "media/sem_lab_report.pdf", name: "Lab Report" }]
             },
             {
+                id: 'photonic-theory',
                 title: "Photonic Device Theory & Analysis – Assignments",
                 category: "Optics & Photonics",
                 tags: ["Waveguides", "Couplers", "Dispersion", "Quantum Well"],
                 bullets: ["Solved design problems involving ridge, slab, and fiber waveguides, calculating effective refractive indices, V-numbers, and confinement factors.","Derived phase-matching conditions and beat lengths for directional couplers; computed coupling efficiencies using overlap integrals.","Modeled group velocity dispersion and bandwidth limitations in Mach–Zehnder modulators and ring resonators.","Analyzed quantum well laser emission and threshold current using energy bandgap, carrier recombination, and confinement models.",],
-                media: [{ type: "pdf", src: "media/photonic_assignments.pdf", name: "Assignments.pdf" },],
-                aiExplanation: "This project represents the theoretical backbone of photonics engineering. It involved solving the fundamental physics problems that govern how light behaves in devices like waveguides and quantum well lasers. This work demonstrates a strong grasp of the mathematical models used to design and analyze the performance of next-generation optical components."
+                media: [{ type: "pdf", src: "media/photonic_assignments.pdf", name: "Assignments" }]
             },
             {
+                id: 'dsp-labs',
                 title: "Analog and Digital Signal Processing Labs",
-                category: "Signal Processing & Communications",
+                category: "Signal Processing",
                 tags: ["MATLAB", "Convolution", "Fourier", "Filtering"],
                 bullets: ["Implemented signal modeling and transformation techniques in MATLAB, including Heaviside step, ramp, and rectangular functions to simulate prime rate trends and periodic pulse trains.","Applied convolution and deconvolution methods to analyze real-world sensor behavior; simulated a thermistor’s temperature response and reconstructed the actual signal using backward Euler discretization.","Evaluated frequency-domain approximations using harmonics to represent pulse trains and studied limitations of phase misalignment, reinforcing concepts behind Fourier series signal synthesis.","Demonstrated understanding of system impulse responses, filtering, and measurement error modeling through visual data analysis and iterative signal correction.",],
-                media: [{ type: "pdf", src: "media/signal_processing_report.pdf", name: "Signal Report.pdf" },{ type: "video", src: "media/signal_demo.mp4", name: "Signal Demo.mp4" },],
-                aiExplanation: "This series of labs showcases the mathematical foundation of how we interpret data. Using MATLAB, I worked with core signal processing techniques like convolution and Fourier analysis to clean up noisy data and understand system behaviors. For example, I was able to model a sensor's response and then mathematically 'work backward' to figure out the true signal it was trying to measure."
+                media: [{ type: "pdf", src: "media/signal_processing_report.pdf", name: "Lab Report" }]
             },
         ];
-
-        // --- PARTICLE ANIMATION ---
-        function setupCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        class Particle {
-            constructor(x, y, directionX, directionY, size, color) {
-                this.x = x; this.y = y; this.directionX = directionX; this.directionY = directionY; this.size = size; this.color = color;
-            }
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-                ctx.fillStyle = 'rgba(0, 68, 179, 0.4)';
-                ctx.fill();
-            }
-            update() {
-                if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
-                if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
-                this.x += this.directionX;
-                this.y += this.directionY;
-                this.draw();
-            }
-        }
-        function initParticles() {
-            particlesArray = [];
-            let numberOfParticles = (canvas.height * canvas.width) / 12000;
-            for (let i = 0; i < numberOfParticles; i++) {
-                let size = (Math.random() * 2.5) + 1;
-                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
-                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
-                let directionX = (Math.random() * 0.4) - 0.2;
-                let directionY = (Math.random() * 0.4) - 0.2;
-                particlesArray.push(new Particle(x, y, directionX, directionY, size));
-            }
-        }
-        function connectParticles() {
-            let opacityValue = 1;
-            for (let a = 0; a < particlesArray.length; a++) {
-                for (let b = a; b < particlesArray.length; b++) {
-                    let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) +
-                        ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
-                    if (distance < (canvas.width / 8) * (canvas.height / 8)) {
-                        opacityValue = 1 - (distance / 25000);
-                        ctx.strokeStyle = `rgba(0, 100, 255, ${opacityValue})`;
-                        ctx.lineWidth = 1;
-                        ctx.beginPath();
-                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
-                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
-                        ctx.stroke();
-                    }
-                }
-            }
-        }
-        function animateParticles() {
-            requestAnimationFrame(animateParticles);
-            ctx.clearRect(0, 0, innerWidth, innerHeight);
-            for (let i = 0; i < particlesArray.length; i++) {
-                particlesArray[i].update();
-            }
-            connectParticles();
-        }
-
-        // --- PAGE & PROJECT RENDERING ---
-        function renderFilterButtons() {
-            const categories = ["All", ...new Set(projects.map((p) => p.category))];
-            categoryFilterContainer.innerHTML = '';
-            categories.forEach((cat, idx) => {
-                const btn = document.createElement("button");
-                btn.textContent = cat || "Uncategorized";
-                btn.className = "px-4 py-2 rounded-md font-press-start text-xs border-2 border-custom-blue transition-all duration-200";
-                if (idx === 0) {
-                    btn.classList.add("bg-custom-blue", "text-white");
-                } else {
-                    btn.classList.add("text-custom-blue", "hover:bg-blue-100");
-                }
-                btn.addEventListener("click", (e) => {
-                    qsa("#categoryFilter button").forEach((b) => {
-                        b.classList.remove("bg-custom-blue", "text-white");
-                        b.classList.add("text-custom-blue", "hover:bg-blue-100");
-                    });
-                    e.currentTarget.classList.add("bg-custom-blue", "text-white");
-                    e.currentTarget.classList.remove("text-custom-blue", "hover:bg-blue-100");
-                    renderProjects(cat);
-                });
-                categoryFilterContainer.appendChild(btn);
+        const skills = {
+          "Software & Programming": [
+            "C, Python, MATLAB",
+            "JavaScript, HTML, CSS",
+            "MSP430 Assembly",
+            "SQL, MongoDB",
+            "LabVIEW, Multisim",
+            "Git, GitHub"
+          ],
+          "Engineering & Design": [
+            "Embedded Systems",
+            "PID Control Systems",
+            "Semiconductor TCAD",
+            "Optical Systems (Zemax)",
+            "Nuclear Systems (MCNP)",
+            "CAD, 3D Printing"
+          ],
+          "Analytical & Other": [
+            "Data Analysis",
+            "Signal Processing",
+            "Fluid & Thermal Analysis",
+            "Technical Writing",
+            "Project Management",
+            "Critical Thinking"
+          ]
+        };
+        // --- DOM ELEMENTS ---
+        const projectGrid = document.getElementById('project-grid');
+        const categoryFilterContainer = document.querySelector('.project-category-filter');
+        const modal = document.getElementById('project-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalContent = document.getElementById('modal-content');
+        const modalCloseBtn = document.getElementById('modal-close-btn');
+        const skillsListContainer = document.getElementById('skills-list');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const pages = document.querySelectorAll('.page');
+        const body = document.body;
+        const scrollDownIndicator = document.getElementById('scroll-down-indicator');
+        // --- PAGE NAVIGATION ---
+        function switchPage(pageId) {
+          body.style.overflow = 'auto';
+          pages.forEach(p => p.classList.remove('active'));
+          const targetPage = document.getElementById(pageId);
+          if (targetPage) {
+            targetPage.classList.add('active');
+          }
+          navLinks.forEach(link => {
+            link.classList.toggle('active', link.dataset.page === pageId || (pageId === 'resume' && link.dataset.page === 'resume'));
+          });
+          if (pageId === 'resume') {
+            document.getElementById('home').classList.add('active'); // Keep home active for layout
+            document.getElementById('resume-section').scrollIntoView({
+              behavior: 'smooth'
             });
-        }
-        function renderProjects(filter = "All") {
-            projectsGrid.innerHTML = "";
-            const filteredProjects = filter === "All" ? projects : projects.filter((p) => p.category === filter);
-            filteredProjects.forEach((proj) => {
-                const originalIndex = projects.findIndex(p => p.title === proj.title);
-                const card = document.createElement("div");
-                card.className = "bg-slate-50 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col overflow-hidden";
-                card.style.animation = `fadeInUp 0.5s ease-out ${originalIndex * 50}ms forwards`;
-                card.classList.add('opacity-0');
-                const aiContentId = `ai-content-${originalIndex}`;
-                const explainBtnId = `explain-btn-${originalIndex}`;
-                const tagsHTML = proj.tags?.map(t => `<span class="inline-block bg-custom-blue/10 text-custom-blue text-xs font-press-start px-2 py-1 rounded-full">${t}</span>`).join(" ") || "";
-                const bulletsHTML = proj.bullets?.map(b => `<li class="text-sm text-medium-text">${b}</li>`).join("") || "";
-                const attachmentsHTML = proj.media?.map((m, i) => {
-                    let iconSVG = '';
-                    if (m.type === "pdf") iconSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-file-earmark-pdf-fill shrink-0" viewBox="0 0 16 16"><path d="M5.523 12.424c.14-.082.293-.162.459-.238a7.878 7.878 0 0 1-.45.606c-.28.337-.498.516-.635.572a.266.266 0 0 1-.035.012.282.282 0 0 1-.026-.044c-.056-.11-.054-.216.04-.36.106-.165.417-.514.876-.964zm4.177-2.456c-.27-.24-.272-.561-.052-.774.19-.193.44-.334.702-.334.398 0 .69.266.69.662 0 .326-.234.576-.727.576-.223 0-.396-.087-.515-.179zm.483-1.143c.126.11.25.213.374.317a.742.742 0 0 1 .166.323.75.75 0 0 1-.166.615c-.138.145-.39.283-.687.283a1.12 1.12 0 0 1-.189-.02c-.19-.042-.35-.12-.458-.222a1.186 1.186 0 0 1-.166-.248.91.91 0 0 1-.029-.111c-.052-.13-.048-.252.038-.377.175-.266.62-.552 1.19-.804zm.409 3.612a.99.99 0 0 1-.399.243.71.71 0 0 1-.401.025c-.387-.052-.597-.203-.756-.365a.867.867 0 0 1-.157-.299c-.042-.105-.036-.213.013-.314.058-.124.13-.25.254-.384.27-.286.666-.498 1.152-.667.073-.025.15-.05.223-.075a.307.307 0 0 1 .091-.01.32.32 0 0 1 .11.024c.07.025.12.064.153.118.073.12.058.248-.004.364a.957.957 0 0 1-.213.318.87.87 0 0 1-.262.224.853.853 0 0 1-.286.134.84.84 0 0 1-.183.03zm6.832-7.399H5.525V4H5.024a.5.5 0 0 0-.5.5v10a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5V4.975a.5.5 0 0 0-.5-.5H12.48V1.5H9.51v1.55H5.525a.5.5 0 0 0-.5.5v.5h11.95a.5.5 0 0 0 .5-.5V4.975a.5.5 0 0 0-.5-.5Z"/><path fill-rule="evenodd" d="M4 0h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H4z"/></svg>`;
-                    else if (m.type === "image" || m.type === "img") iconSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-image-fill shrink-0" viewBox="0 0 16 16"><path d="M.002 3a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-12a2 2 0 0 1-2-2V3zm1 9v1a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12zm5-6.5A1.5 1.5 0 1 0 4.5 7 1.5 1.5 0 0 0 6 5.5z"/></svg>`;
-                    else if (m.type === "video") iconSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-play-btn-fill shrink-0" viewBox="0 0 16 16"><path d="M0 12V4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm6.79-6.907A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814l-3.5-2.5z"/></svg>`;
-                    else iconSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-file-earmark-fill shrink-0" viewBox="0 0 16 16"><path d="M4 0h5.293A1 1 0 0 1 10 .293L13.707 4a1 1 0 0 1 .293.707V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm5.5 1.5v2.5a1 1 0 0 0 1 1h2.5L9.5 1.5z"/></svg>`;
-                    
-                    const displayName = m.name || m.src.split("/").pop().substring(0, 20) + (m.src.split("/").pop().length > 20 ? '...' : '');
-
-                    if (m.type === 'pdf') {
-                        return `<a href="${m.src}" target="_blank" rel="noopener noreferrer" class="attachment-btn flex items-center gap-2 text-sm text-custom-blue bg-custom-blue/10 hover:bg-custom-blue/20 p-2 rounded-md transition-colors duration-200"> ${iconSVG} <span class="truncate" title="${m.src.split("/").pop()}">${displayName}</span></a>`;
-                    } else {
-                        return `<button class="attachment-btn flex items-center gap-2 text-sm text-custom-blue bg-custom-blue/10 hover:bg-custom-blue/20 p-2 rounded-md transition-colors duration-200" onclick="openMediaModal(${originalIndex}, ${i})"> ${iconSVG} <span class="truncate" title="${m.src.split("/").pop()}">${displayName}</span></button>`;
-                    }
-                }).join(" ") || "";
-                card.innerHTML = `
-                    <div class="p-5 flex-grow">
-                        <h3 class="text-xl font-press-start text-custom-blue mb-3">${proj.title}</h3>
-                        <div class="flex flex-wrap gap-2 mb-4">${tagsHTML}</div>
-                        <ul class="list-disc list-inside space-y-1.5 mb-4 pl-1">${bulletsHTML}</ul>
-                    </div>
-                    <div class="px-5 pb-5 border-t border-gray-200 pt-4">
-                        <p class="text-sm font-semibold text-dark-text mb-2">Attachments:</p>
-                        <div class="flex flex-wrap gap-2 mb-4">${attachmentsHTML.length > 0 ? attachmentsHTML : '<p class="text-xs text-light-text">No attachments.</p>'}</div>
-                        <div class="mt-4 pt-4 border-t border-gray-200 space-y-2">
-                             <button id="${explainBtnId}" data-project-index="${originalIndex}" class="w-full gemini-btn inline-flex items-center justify-center gap-2 bg-ai-purple text-white font-press-start text-xs py-2 px-3 rounded-md hover:bg-purple-700 transition-colors">
-                                ✨ Explain Project
-                            </button>
-                            <div id="${aiContentId}" class="ai-content-area hidden"></div>
-                        </div>
-                    </div>`;
-                projectsGrid.appendChild(card);
-                qs(`#${explainBtnId}`).addEventListener('click', (e) => toggleProjectExplanation(e.currentTarget));
+          } else if (pageId !== 'home') {
+            window.scrollTo({
+              top: 0,
+              behavior: 'instant'
             });
+          }
+          body.className = 'page-' + pageId;
+          sceneManager.activeSceneId = pageId;
+          const activePageScenes = sceneManager.scenes[pageId];
+          if (activePageScenes) {
+            Object.keys(activePageScenes).forEach(sceneType => { // sceneType is 'main', 'hardware', 'software'
+              const sceneData = activePageScenes[sceneType];
+              if (sceneData && !sceneData.initialized) {
+                const fullSceneId = pageId === 'skills' ? `skills-${sceneType}` : pageId;
+                sceneManager.initializeScene(fullSceneId);
+              }
+            });
+          }
         }
-        function toggleProjectExplanation(buttonElement) {
-            const projectIndex = parseInt(buttonElement.dataset.projectIndex);
-            const project = projects[projectIndex];
-            const aiContentArea = qs(`#ai-content-${projectIndex}`);
-            if (!project || !aiContentArea) return;
+        scrollDownIndicator.addEventListener('click', () => {
+          document.getElementById('resume-section').scrollIntoView({
+            behavior: 'smooth'
+          });
+        });
+        document.querySelectorAll('a[data-page]').forEach(link => {
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchPage(e.currentTarget.dataset.page);
+          });
+        });
+        // --- PROJECT FILTERING & DISPLAY ---
+        const categories = ['All', ...new Set(projects.map(p => p.category))];
 
-            if (aiContentArea.classList.contains('hidden')) {
-                aiContentArea.innerHTML = `<p>${project.aiExplanation}</p>`;
-                aiContentArea.classList.remove('hidden');
-                 buttonElement.textContent = 'Hide Explanation';
-            } else {
-                aiContentArea.innerHTML = '';
-                aiContentArea.classList.add('hidden');
-                 buttonElement.innerHTML = '✨ Explain Project';
-            }
+        function renderCategoryFilters() {
+          categoryFilterContainer.innerHTML = categories.map(cat => `
+								<button data-category="${cat}" class="p-2 text-left rounded-md text-sm ${cat === 'All' ? 'active' : ''}">${cat}</button>`).join('');
+          categoryFilterContainer.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', () => {
+              categoryFilterContainer.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+              btn.classList.add('active');
+              renderProjectGrid(btn.dataset.category);
+            });
+          });
         }
-        
+
+        function renderProjectGrid(category = 'All') {
+          const filteredProjects = category === 'All' ? projects : projects.filter(p => p.category === category);
+          projectGrid.innerHTML = filteredProjects.map(project => `
+                
+								<div class="p-4 border border-solid border-[color:var(--border-color)] rounded-md cursor-pointer project-item transition-all duration-200 hover:bg-white/5 hover:border-accent-cyan" data-project-id="${project.id}">
+									<h4 class="font-semibold text-text-primary pointer-events-none">${project.title.split('–')[0]}</h4>
+									<p class="text-xs text-text-secondary pointer-events-none mt-1">${project.category}</p>
+								</div>
+              `).join('');
+          projectGrid.querySelectorAll('.project-item').forEach(card => {
+            card.addEventListener('click', () => {
+              const project = projects.find(p => p.id === card.dataset.projectId);
+              openModal(project);
+            });
+          });
+        }
+        // --- SKILLS LIST ---
+        function renderSkills() {
+          skillsListContainer.innerHTML = Object.entries(skills).map(([category, list]) => `
+                
+								<div>
+									<h3 class="font-semibold text-accent-cyan text-lg mb-3">${category}</h3>
+									<ul class="space-y-2">
+                        ${list.map(skill => `
+										<li class="text-text-secondary before:content-['▹'] before:mr-3 before:text-accent-cyan">${skill}</li>`).join('')}
+                      
+									</ul>
+								</div>
+              `).join('');
+        }
         // --- MODAL LOGIC ---
-        window.openMediaModal = (projectIndex, mediaIndex) => {
-            currentMediaArray = projects[projectIndex].media;
-            currentMediaIndex = mediaIndex;
-            renderMediaItem();
-        };
-        window.closeMediaModal = (event, forceClose = false) => {
-            if (forceClose || (event && event.target === mediaModal)) {
-                mediaModal.classList.add("hidden");
-                document.body.style.overflow = 'auto';
-            }
-        };
-        window.prevMedia = () => {
-            currentMediaIndex = (currentMediaIndex - 1 + currentMediaArray.length) % currentMediaArray.length;
-            renderMediaItem();
-        };
-        window.nextMedia = () => {
-            currentMediaIndex = (currentMediaIndex + 1) % currentMediaArray.length;
-            renderMediaItem();
-        };
-        function renderMediaItem() {
-            const item = currentMediaArray[currentMediaIndex];
-            if (!item) return;
-
-            modalContainer.innerHTML = '';
-            let element;
-
-            if (item.type === "pdf") {
-                 // This case should not be reached for portfolio PDFs anymore, but kept for robustness
-                mediaModal.className = "fixed inset-0 bg-black/80 backdrop-blur-sm z-[2000] p-4 flex items-center justify-center";
-                modalContainer.className = "relative bg-white rounded-lg shadow-2xl w-full max-w-4xl h-[90vh] flex flex-col";
-                element = document.createElement("iframe");
-                element.src = item.src;
-                element.className = "w-full h-full flex-grow border-none";
-                element.title = item.name || "PDF Viewer";
-                modalContainer.appendChild(element);
-            } else {
-                mediaModal.className = "fixed inset-0 bg-black/80 backdrop-blur-sm z-[2000] p-4 flex items-center justify-center";
-                modalContainer.className = "relative w-auto h-auto";
-                if (item.type === "image" || item.type === "img") {
-                    element = document.createElement("img");
-                    element.src = item.src;
-                    element.alt = item.name || "Project image";
-                    element.className = "block max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-xl";
-                    element.onerror = () => { modalContainer.innerHTML = `<p class="p-4 text-center text-red-500 bg-white rounded">Could not load image: ${item.src}</p>`; };
-                } else if (item.type === "video") {
-                    element = document.createElement("video");
-                    element.src = item.src;
-                    element.controls = true;
-                    element.autoplay = true;
-                    element.className = "block max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-xl";
-                    element.onerror = () => { modalContainer.innerHTML = `<p class="p-4 text-center text-red-500 bg-white rounded">Could not load video: ${item.src}</p>`;};
-                } else {
-                    element = document.createElement("div");
-                    element.className = "p-8 bg-white rounded-lg";
-                    element.innerHTML = `<p class="text-center">Cannot preview this file type.</p><a href="${item.src}" target="_blank" class="block text-center text-custom-blue hover:underline mt-2">Download File</a>`;
-                }
-                if (element) {
-                    modalContainer.appendChild(element);
-                }
-            }
-            mediaModal.classList.remove("hidden");
-            document.body.style.overflow = 'hidden';
+        function openModal(project) {
+          modalTitle.textContent = project.title;
+          const tagsHTML = project.tags.map(tag => `
+								<span class="inline-block bg-gray-700 text-accent-cyan text-xs font-medium mr-2 mb-2 px-2.5 py-1 rounded-full">${tag}</span>`).join('');
+          const bulletsHTML = project.bullets.map(bullet => `
+								<li class="text-text-secondary mb-2 pl-2">${bullet}</li>`).join('');
+          const mediaHTML = project.media.map(m => `
+								<a href="${m.src}" target="_blank" class="inline-block bg-border-color hover:bg-accent-cyan hover:text-bg-color transition-colors text-accent-cyan font-medium py-2 px-4 rounded-md text-sm">${m.name}</a>`).join('');
+          modalContent.innerHTML = `
+                
+								<div class="space-y-6">
+									<p class="text-accent-cyan font-mono">${project.category}</p>
+									<div class="flex flex-wrap">${tagsHTML}</div>
+									<div>
+										<h4 class="font-semibold text-text-primary mb-2 border-b border-solid border-[color:var(--border-color)] pb-2 text-lg">Key Contributions & Analysis</h4>
+										<ul class="list-disc list-inside space-y-2 mt-3 text-sm">${bulletsHTML}</ul>
+									</div>
+                      ${project.media.length > 0 ? `
+                      
+									<div>
+										<h4 class="font-semibold text-text-primary mb-2 border-b border-solid border-[color:var(--border-color)] pb-2 text-lg">Supporting Documents</h4>
+										<div class="flex flex-wrap gap-3 mt-3">${mediaHTML}</div>
+									</div>` : ''}
+                
+								</div>
+              `;
+          modal.classList.remove('hidden');
         }
 
-        // --- GENERAL EVENT LISTENERS & INITIALIZATION ---
-        const hideLanding = () => {
-            landing.classList.add("opacity-0", "pointer-events-none");
-            setTimeout(() => landing.classList.add("hidden"), 700);
-            document.body.style.overflow = 'auto';
-        };
+        function closeModal() {
+          modal.classList.add('hidden');
+        }
+        modalCloseBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) closeModal();
+        });
+        // --- DRAG CONTROLS HELPER ---
+        function addDragControls(container, objectToMove) {
+          let isDragging = false;
+          let previousPointerPosition = {
+            x: 0,
+            y: 0
+          };
 
-        enterBtn.addEventListener("click", hideLanding);
-        document.addEventListener("keydown", (e) => {
-            if (e.key === "Enter" && !landing.classList.contains("hidden") && !landing.classList.contains("opacity-0")) hideLanding();
-            if (e.key === "Escape") {
-                if (!resumeModal.classList.contains("hidden")) closeResumeModal();
-                if (!mediaModal.classList.contains("hidden")) closeMediaModal(null, true);
+          function getPointerPosition(e) {
+            if (e.touches && e.touches.length > 0) {
+              return {
+                x: e.touches[0].clientX,
+                y: e.touches[0].clientY
+              };
             }
-            if (!mediaModal.classList.contains("hidden")) {
-                if (e.key === "ArrowLeft") prevMedia();
-                if (e.key === "ArrowRight") nextMedia();
+            return {
+              x: e.clientX,
+              y: e.clientY
+            };
+          }
+
+          function onPointerDown(e) {
+            isDragging = true;
+            previousPointerPosition = getPointerPosition(e);
+            if (e.type === 'touchstart') e.preventDefault();
+          }
+
+          function onPointerUp() {
+            isDragging = false;
+          }
+
+          function onPointerLeave() {
+            isDragging = false;
+          }
+
+          function onPointerMove(e) {
+            if (!isDragging || !objectToMove) return;
+            if (e.type === 'touchmove') e.preventDefault();
+            const currentPointerPosition = getPointerPosition(e);
+            const deltaX = currentPointerPosition.x - previousPointerPosition.x;
+            const deltaY = currentPointerPosition.y - previousPointerPosition.y;
+            objectToMove.rotation.y += deltaX * 0.005;
+            objectToMove.rotation.x += deltaY * 0.005;
+            previousPointerPosition = currentPointerPosition;
+          }
+          container.addEventListener('mousedown', onPointerDown);
+          container.addEventListener('mouseup', onPointerUp);
+          container.addEventListener('mouseleave', onPointerLeave);
+          container.addEventListener('mousemove', onPointerMove);
+          container.addEventListener('touchstart', onPointerDown, {
+            passive: false
+          });
+          container.addEventListener('touchend', onPointerUp);
+          container.addEventListener('touchmove', onPointerMove, {
+            passive: false
+          });
+        }
+        // --- SCENE MANAGER ---
+        const sceneManager = {
+          scenes: {
+            home: {
+              main: {}
+            },
+            about: {
+              main: {}
+            },
+            skills: {
+              hardware: {},
+              software: {}
             }
-        });
-        mainNavButtons.forEach((btn) => {
-            btn.addEventListener("click", () => {
-                const targetPageId = btn.getAttribute("data-page");
-                mainNavButtons.forEach((b) => {
-                    b.classList.remove("active", "bg-custom-blue", "text-white");
-                    b.classList.add("text-custom-blue", "hover:bg-blue-100");
-                });
-                btn.classList.add("active", "bg-custom-blue", "text-white");
-                btn.classList.remove("text-custom-blue", "hover:bg-blue-100");
-                pages.forEach((page) => {
-                    page.classList.add("hidden");
-                    page.classList.remove("active", "animate-fade-in-up");
-                });
-                const targetPage = document.getElementById(targetPageId);
-                if (targetPage) {
-                    targetPage.classList.remove("hidden");
-                    targetPage.classList.add("active", "animate-fade-in-up");
-                    targetPage.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
+          },
+          activeSceneId: null,
+          init: function() {
+            window.addEventListener('resize', this.onWindowResize.bind(this));
+            this.animate();
+          },
+          initializeScene: function(sceneId) {
+            let sceneData, containerId, pageId;
+            if (sceneId.startsWith('skills-')) {
+              pageId = 'skills';
+              const type = sceneId.split('-')[1]; // hardware or software
+              sceneData = this.scenes.skills[type];
+              containerId = type === 'hardware' ? 'skills-canvas-container' : 'skills-canvas-container-2';
+            } else {
+              pageId = sceneId;
+              sceneData = this.scenes[pageId].main;
+              containerId = `${pageId}-canvas-container`;
+            }
+            if (sceneData && !sceneData.initialized) {
+              const container = document.getElementById(containerId);
+              if (!container) return;
+              sceneData.camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+              sceneData.renderer = new THREE.WebGLRenderer({
+                antialias: true,
+                alpha: true
+              });
+              sceneData.renderer.setSize(container.clientWidth, container.clientHeight);
+              sceneData.renderer.setPixelRatio(window.devicePixelRatio);
+              container.innerHTML = '';
+              container.appendChild(sceneData.renderer.domElement);
+              if (pageId === 'home') this.createHomeAssets(sceneData, container);
+              else if (pageId === 'about') this.createAboutAssets(sceneData, container);
+              else if (pageId === 'skills') {
+                if (containerId === 'skills-canvas-container') this.createSkillsHardwareAssets(sceneData, container);
+                if (containerId === 'skills-canvas-container-2') this.createSkillsSoftwareAssets(sceneData, container);
+              }
+              sceneData.initialized = true;
+            }
+          },
+          createHomeAssets: function(sceneData, container) {
+            const scene = new THREE.Scene();
+            const reactorGroup = new THREE.Group();
+            scene.add(reactorGroup);
+            const ambientLight = new THREE.AmbientLight(0x0077ff, 0.2);
+            scene.add(ambientLight);
+            const coreLight = new THREE.PointLight(0x00BFFF, 3, 15);
+            reactorGroup.add(coreLight);
+            const coreMaterial = new THREE.MeshStandardMaterial({
+              color: 0x00BFFF,
+              emissive: 0x00BFFF,
+              emissiveIntensity: 1,
+              metalness: 0.8,
+              roughness: 0.2
             });
-        });
-        qsa('.nav-btn').forEach(button => {
-            if (!button.classList.contains('active')) button.classList.add('text-custom-blue', 'hover:bg-blue-100', 'transition-colors');
-            else button.classList.add('bg-custom-blue', 'text-white');
-        });
-        resumeBtn.addEventListener("click", () => {
-            resumeModal.classList.remove("hidden");
-            document.body.style.overflow = 'hidden';
-        });
-        window.closeResumeModal = () => {
-            resumeModal.classList.add("hidden");
-            document.body.style.overflow = 'auto';
+            const coreGeometry = new THREE.CylinderGeometry(0.8, 0.8, 3, 6);
+            const centralCore = new THREE.Mesh(coreGeometry, coreMaterial);
+            centralCore.scale.set(1, 1.2, 1);
+            reactorGroup.add(centralCore);
+            const controlRods = [];
+            const rodMaterial = new THREE.MeshStandardMaterial({
+              color: 0x444444,
+              roughness: 0.1,
+              metalness: 1
+            });
+            const rodGeometry = new THREE.CylinderGeometry(0.1, 0.1, 5, 8);
+            for (let i = 0; i < 8; i++) {
+              const angle = (i / 8) * Math.PI * 2;
+              const radius = 1.2;
+              const rod = new THREE.Mesh(rodGeometry, rodMaterial);
+              rod.position.set(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
+              controlRods.push(rod);
+              reactorGroup.add(rod);
+            }
+            const waterGeometry = new THREE.CylinderGeometry(3, 3, 7, 64, 1, true);
+            const waterMaterial = new THREE.MeshBasicMaterial({
+              color: 0x0077ff,
+              transparent: true,
+              opacity: 0.1,
+              side: THREE.DoubleSide
+            });
+            const waterVessel = new THREE.Mesh(waterGeometry, waterMaterial);
+            reactorGroup.add(waterVessel);
+            const particleCount = 1000;
+            const particlesGeometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            for (let i = 0; i < particleCount; i++) {
+              positions[i * 3] = (Math.random() - 0.5) * 0.1;
+              positions[i * 3 + 1] = (Math.random() - 0.5) * 3;
+              positions[i * 3 + 2] = (Math.random() - 0.5) * 0.1;
+            }
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            const particleMaterial = new THREE.PointsMaterial({
+              color: 0x00BFFF,
+              size: 0.03,
+              transparent: true,
+              blending: THREE.AdditiveBlending,
+              depthWrite: false
+            });
+            const particleSystem = new THREE.Points(particlesGeometry, particleMaterial);
+            reactorGroup.add(particleSystem);
+            const renderScene = new THREE.RenderPass(scene, sceneData.camera);
+            const bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(container.clientWidth, container.clientHeight), 1.5, 0.4, 0.85);
+            bloomPass.threshold = 0;
+            bloomPass.strength = 1.2;
+            bloomPass.radius = 0.5;
+            const composer = new THREE.EffectComposer(sceneData.renderer);
+            composer.addPass(renderScene);
+            composer.addPass(bloomPass);
+            sceneData.camera.position.set(0, 3, 6);
+            sceneData.camera.lookAt(0, 0, 0);
+            Object.assign(sceneData, {
+              scene,
+              composer,
+              reactorGroup,
+              controlRods,
+              particleSystem
+            });
+            addDragControls(container, reactorGroup);
+          },
+          createAboutAssets: function(sceneData, container) {
+            const scene = new THREE.Scene();
+            const solarPanelGroup = new THREE.Group();
+            scene.add(solarPanelGroup);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+            const lightSource = new THREE.PointLight(0xffeeb1, 1, 10);
+            lightSource.position.set(0, 1, 0);
+            scene.add(lightSource);
+            const cellSize = 1.5;
+            const cellPadding = 0.05;
+            const panelSize = 3 * cellSize + 2 * cellPadding;
+            const cells = [];
+            const cellGeometry = new THREE.BoxGeometry(cellSize, 0.1, cellSize);
+            const cellMaterial = new THREE.MeshStandardMaterial({
+              color: 0x0a2a4a,
+              metalness: 0.2,
+              roughness: 0.1
+            });
+            for (let i = 0; i < 3; i++) {
+              for (let j = 0; j < 3; j++) {
+                const cell = new THREE.Mesh(cellGeometry, cellMaterial.clone());
+                cell.position.set((i - 1) * (cellSize + cellPadding), 0, (j - 1) * (cellSize + cellPadding));
+                solarPanelGroup.add(cell);
+                cells.push(cell);
+                const contactMaterial = new THREE.MeshBasicMaterial({
+                  color: 0xc0c0c0
+                });
+                for (let k = -1; k <= 1; k += 2) {
+                  const busbar = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.12, cellSize), contactMaterial);
+                  busbar.position.set(k * (cellSize / 4), 0, 0);
+                  cell.add(busbar);
+                }
+                for (let k = 0; k < 10; k++) {
+                  const finger = new THREE.Mesh(new THREE.BoxGeometry(cellSize, 0.12, 0.01), contactMaterial);
+                  finger.position.set(0, 0, (k - 4.5) * (cellSize / 10));
+                  cell.add(finger);
+                }
+              }
+            }
+            const photonCount = 200;
+            const photonGeometry = new THREE.BufferGeometry();
+            const photonPositions = new Float32Array(photonCount * 3);
+            for (let i = 0; i < photonCount; i++) {
+              photonPositions[i * 3] = (Math.random() - 0.5) * panelSize;
+              photonPositions[i * 3 + 1] = Math.random() * 2 + 0.5;
+              photonPositions[i * 3 + 2] = (Math.random() - 0.5) * panelSize;
+            }
+            photonGeometry.setAttribute('position', new THREE.BufferAttribute(photonPositions, 3));
+            const photonMaterial = new THREE.PointsMaterial({
+              color: 0xffddaa,
+              size: 0.03,
+              transparent: true,
+              opacity: 0.7
+            });
+            const photons = new THREE.Points(photonGeometry, photonMaterial);
+            scene.add(photons);
+            const electronCount = 300;
+            const electronGeometry = new THREE.BufferGeometry();
+            const electronPositions = new Float32Array(electronCount * 3);
+            const electronVelocities = new Float32Array(electronCount * 3);
+            for (let i = 0; i < electronCount; i++) {
+              electronPositions[i * 3] = (Math.random() - 0.5) * panelSize;
+              electronPositions[i * 3 + 1] = 0.06;
+              electronPositions[i * 3 + 2] = (Math.random() - 0.5) * panelSize;
+              electronVelocities[i * 3] = (Math.random() - 0.5) * 0.02;
+              electronVelocities[i * 3 + 2] = (Math.random() - 0.5) * 0.02;
+            }
+            electronGeometry.setAttribute('position', new THREE.BufferAttribute(electronPositions, 3));
+            electronGeometry.setAttribute('velocity', new THREE.BufferAttribute(electronVelocities, 3));
+            const electronMaterial = new THREE.PointsMaterial({
+              color: 0x00BFFF,
+              size: 0.05,
+              blending: THREE.AdditiveBlending,
+              transparent: true,
+              opacity: 0
+            });
+            const electrons = new THREE.Points(electronGeometry, electronMaterial);
+            solarPanelGroup.add(electrons);
+            sceneData.camera.position.set(0, 5, 5);
+            sceneData.camera.lookAt(0, 0, 0);
+            const raycaster = new THREE.Raycaster();
+            const mouse = new THREE.Vector2();
+            const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+
+            function onPointerMove(event) {
+              if (event.type === 'touchmove') event.preventDefault();
+              let clientX, clientY;
+              if (event.touches) {
+                clientX = event.touches[0].clientX;
+                clientY = event.touches[0].clientY;
+              } else {
+                clientX = event.clientX;
+                clientY = event.clientY;
+              }
+              mouse.x = (clientX / window.innerWidth) * 2 - 1;
+              mouse.y = -(clientY / window.innerHeight) * 2 + 1;
+              raycaster.setFromCamera(mouse, sceneData.camera);
+              const intersectPoint = new THREE.Vector3();
+              raycaster.ray.intersectPlane(plane, intersectPoint);
+              if (intersectPoint) {
+                lightSource.position.copy(intersectPoint).setY(1);
+              }
+            }
+            container.addEventListener('mousemove', onPointerMove);
+            container.addEventListener('touchmove', onPointerMove, {
+              passive: false
+            });
+            Object.assign(sceneData, {
+              scene,
+              solarPanelGroup,
+              lightSource,
+              cells,
+              photons,
+              electrons,
+              panelSize
+            });
+            addDragControls(container, solarPanelGroup);
+          },
+          createSkillsHardwareAssets: function(sceneData, container) {
+            const scene = new THREE.Scene();
+            const systemGroup = new THREE.Group();
+            scene.add(systemGroup);
+            scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            dirLight.position.set(3, 4, 2);
+            scene.add(dirLight);
+            const greyMaterial = new THREE.MeshStandardMaterial({
+              color: 0xcccccc,
+              roughness: 0.6,
+              metalness: 0.2
+            });
+            const darkGreyMaterial = new THREE.MeshStandardMaterial({
+              color: 0x333333,
+              roughness: 0.4,
+              metalness: 0.2
+            });
+            const blueMaterial = new THREE.MeshStandardMaterial({
+              color: 0x0055aa,
+              roughness: 0.5
+            });
+            const greenMaterial = new THREE.MeshStandardMaterial({
+              color: 0x006644,
+              roughness: 0.5
+            });
+            const board = new THREE.Mesh(new THREE.BoxGeometry(6, 0.1, 4), darkGreyMaterial);
+            board.position.y = -0.8;
+            systemGroup.add(board);
+            const dispenserGroup = new THREE.Group();
+            dispenserGroup.position.x = -1.5;
+            const mainBody = new THREE.Mesh(new THREE.BoxGeometry(2.5, 1.5, 2), greyMaterial);
+            dispenserGroup.add(mainBody);
+            const rollerGeom = new THREE.CylinderGeometry(0.2, 0.2, 1.8, 16);
+            const primerRoller = new THREE.Mesh(rollerGeom, darkGreyMaterial);
+            primerRoller.rotation.z = Math.PI / 2;
+            primerRoller.position.set(0, -0.5, 0.2);
+            dispenserGroup.add(primerRoller);
+            const ejectRoller1 = new THREE.Mesh(rollerGeom, darkGreyMaterial);
+            ejectRoller1.rotation.z = Math.PI / 2;
+            ejectRoller1.position.set(0, 0.1, 1.2);
+            dispenserGroup.add(ejectRoller1);
+            const ejectRoller2 = new THREE.Mesh(rollerGeom, darkGreyMaterial);
+            ejectRoller2.rotation.z = Math.PI / 2;
+            ejectRoller2.position.set(0, -0.2, 1.2);
+            dispenserGroup.add(ejectRoller2);
+            systemGroup.add(dispenserGroup);
+            const animatedCard = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.02, 1.2), new THREE.MeshStandardMaterial({
+              color: 0xffffff,
+              roughness: 0.8
+            }));
+            animatedCard.position.set(0, -0.25, 0);
+            dispenserGroup.add(animatedCard);
+            const cameraGroup = new THREE.Group();
+            const camBody = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.3, 0.4), darkGreyMaterial);
+            const camLens = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.1, 0.3, 16), darkGreyMaterial);
+            camLens.rotation.x = Math.PI / 2;
+            camLens.position.z = 0.2;
+            cameraGroup.add(camBody, camLens);
+            cameraGroup.position.set(0, 1.2, 0.8);
+            cameraGroup.rotation.x = -Math.PI / 6;
+            dispenserGroup.add(cameraGroup);
+            const screen = new THREE.Mesh(new THREE.PlaneGeometry(2.5, 1.5), new THREE.MeshBasicMaterial({
+              color: 0x000000
+            }));
+            screen.position.set(1.5, 0.75, -1);
+            systemGroup.add(screen);
+            const textCanvas = document.createElement('canvas');
+            textCanvas.width = 256;
+            textCanvas.height = 128;
+            const textContext = textCanvas.getContext('2d');
+            const textTexture = new THREE.CanvasTexture(textCanvas);
+            const textPlane = new THREE.Mesh(new THREE.PlaneGeometry(2.5, 1.25), new THREE.MeshBasicMaterial({
+              map: textTexture,
+              transparent: true
+            }));
+            textPlane.position.z = 0.01;
+            screen.add(textPlane);
+            const electronicsGroup = new THREE.Group();
+            electronicsGroup.position.set(1.5, -0.7, 1);
+            electronicsGroup.add(new THREE.Mesh(new THREE.BoxGeometry(1, 0.1, 0.7), blueMaterial));
+            const driver1 = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.1, 0.3), greenMaterial);
+            driver1.position.set(-0.2, 0, 0.5);
+            electronicsGroup.add(driver1);
+            const driver2 = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.1, 0.3), greenMaterial);
+            driver2.position.set(0.2, 0, 0.5);
+            electronicsGroup.add(driver2);
+            systemGroup.add(electronicsGroup);
+            const motorGeom = new THREE.BoxGeometry(0.4, 0.4, 0.5);
+            const motor1 = new THREE.Mesh(motorGeom, darkGreyMaterial);
+            motor1.position.set(-1.5, -0.5, -1.2);
+            systemGroup.add(motor1);
+            const motor2 = new THREE.Mesh(motorGeom, darkGreyMaterial);
+            motor2.position.set(-1.5, 0, -1.2);
+            systemGroup.add(motor2);
+            const lineMaterial = new THREE.LineBasicMaterial({
+              color: 0x00BFFF,
+              blending: THREE.AdditiveBlending,
+              transparent: true,
+              opacity: 0.7
+            });
+            const packetMaterial = new THREE.MeshBasicMaterial({
+              color: 0xffffff
+            });
+            const packets = [];
+            const paths = {
+              camToArduino: new THREE.CatmullRomCurve3([new THREE.Vector3(-1.5, 1.2, 0.6), new THREE.Vector3(0, 0.5, 0), new THREE.Vector3(1.5, -0.7, 1)]),
+              arduinoToDriver1: new THREE.CatmullRomCurve3([new THREE.Vector3(1.5, -0.7, 1), new THREE.Vector3(1.4, -0.7, 1.25), new THREE.Vector3(1.3, -0.7, 1.5)]),
+              arduinoToDriver2: new THREE.CatmullRomCurve3([new THREE.Vector3(1.5, -0.7, 1), new THREE.Vector3(1.6, -0.7, 1.25), new THREE.Vector3(1.7, -0.7, 1.5)]),
+              driver1ToMotor1: new THREE.CatmullRomCurve3([new THREE.Vector3(1.3, -0.7, 1.5), new THREE.Vector3(0, -0.6, 0), new THREE.Vector3(-1.5, -0.5, -1.2)]),
+              driver2ToMotor2: new THREE.CatmullRomCurve3([new THREE.Vector3(1.7, -0.7, 1.5), new THREE.Vector3(0, -0.3, 0), new THREE.Vector3(-1.5, 0, -1.2)])
+            };
+            for (const key in paths) {
+              const path = paths[key];
+              systemGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(path.getPoints(50)), lineMaterial));
+              for (let i = 0; i < 3; i++) {
+                const packet = new THREE.Mesh(new THREE.SphereGeometry(0.04, 8, 8), packetMaterial);
+                packets.push({
+                  mesh: packet,
+                  path: path,
+                  progress: Math.random()
+                });
+                systemGroup.add(packet);
+              }
+            }
+            sceneData.camera.position.set(0, 1.5, 8);
+            sceneData.camera.lookAt(0, 0, 0);
+            Object.assign(sceneData, {
+              scene,
+              systemGroup,
+              primerRoller,
+              ejectRoller1,
+              ejectRoller2,
+              animatedCard,
+              textContext,
+              textTexture,
+              packets
+            });
+            addDragControls(container, systemGroup);
+          },
+          createSkillsSoftwareAssets: function(sceneData, container) {
+            const scene = new THREE.Scene();
+            const gestureGroup = new THREE.Group();
+            scene.add(gestureGroup);
+            scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
+            dirLight.position.set(0, 3, 5);
+            scene.add(dirLight);
+            const handMaterial = new THREE.MeshStandardMaterial({
+              color: 0x22aaff,
+              roughness: 0.5
+            });
+            const lineMaterial = new THREE.LineBasicMaterial({
+              color: 0xffffff,
+              transparent: true,
+              opacity: 0.5
+            });
+            const palm = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.4, 0.25), handMaterial);
+            palm.position.y = -0.2;
+            gestureGroup.add(palm);
+            const fingers = [];
+            const fingerParams = [{
+              x: -0.4,
+              y: 0,
+              z: 0,
+              len: [0.4, 0.3, 0.2]
+            }, // Thumb
+              {
+                x: -0.2,
+                y: 0.7,
+                z: 0,
+                len: [0.6, 0.4, 0.3]
+              }, // Index
+              {
+                x: 0.05,
+                y: 0.7,
+                z: 0,
+                len: [0.7, 0.5, 0.35]
+              }, // Middle
+              {
+                x: 0.3,
+                y: 0.7,
+                z: 0,
+                len: [0.65, 0.45, 0.3]
+              }, // Ring
+              {
+                x: 0.55,
+                y: 0.6,
+                z: 0,
+                len: [0.5, 0.35, 0.25]
+              } // Pinky
+            ];
+            for (let i = 0; i < 5; i++) {
+              const params = fingerParams[i];
+              const fingerGroup = new THREE.Group();
+              const phalanx1 = new THREE.Mesh(new THREE.BoxGeometry(0.2, params.len[0], 0.2), handMaterial);
+              phalanx1.position.y = params.len[0] / 2;
+              const phalanx2 = new THREE.Mesh(new THREE.BoxGeometry(0.2, params.len[1], 0.2), handMaterial);
+              phalanx2.position.y = params.len[1] / 2 + 0.05;
+              const phalanx3 = new THREE.Mesh(new THREE.BoxGeometry(0.2, params.len[2], 0.2), handMaterial);
+              phalanx3.position.y = params.len[2] / 2 + 0.05;
+              const joint1 = new THREE.Group();
+              joint1.position.y = params.len[0] / 2;
+              joint1.add(phalanx2);
+              const joint2 = new THREE.Group();
+              joint2.position.y = params.len[1] / 2;
+              joint2.add(phalanx3);
+              phalanx1.add(joint1);
+              phalanx2.add(joint2);
+              fingerGroup.add(phalanx1);
+              fingerGroup.position.set(params.x, params.y, params.z);
+              if (i === 0) { // Thumb rotation
+                fingerGroup.rotation.z = Math.PI / 4;
+              }
+              fingers.push({
+                group: fingerGroup,
+                j1: joint1,
+                j2: joint2
+              });
+              gestureGroup.add(fingerGroup);
+            }
+            gestureGroup.position.x = -3.0; // Adjusted position
+            const nnGroup = new THREE.Group();
+            nnGroup.position.x = 1;
+            scene.add(nnGroup);
+            const layerX = [-2, 0, 2];
+            const layerCounts = [5, 7, 2];
+            const nodeMaterial = new THREE.MeshBasicMaterial({
+              color: 0x00BFFF
+            });
+            const nodeGeom = new THREE.SphereGeometry(0.15, 16, 16);
+            const layers = [];
+            for (let i = 0; i < layerCounts.length; i++) {
+              const layer = [];
+              for (let j = 0; j < layerCounts[i]; j++) {
+                const node = new THREE.Mesh(nodeGeom, nodeMaterial.clone());
+                node.position.set(layerX[i], (j - (layerCounts[i] - 1) / 2) * 0.8, 0);
+                nnGroup.add(node);
+                layer.push(node);
+              }
+              layers.push(layer);
+            }
+            for (let i = 0; i < layers.length - 1; i++) {
+              layers[i].forEach(startNode => {
+                layers[i + 1].forEach(endNode => {
+                  const lineGeom = new THREE.BufferGeometry().setFromPoints([startNode.position, endNode.position]);
+                  nnGroup.add(new THREE.Line(lineGeom, lineMaterial));
+                });
+              });
+            }
+            const outputLabels = ["STAND", "HIT"];
+            layers[2].forEach((node, i) => {
+              // MODIFICATION: Increased canvas resolution and font size for clarity.
+              const canvas = document.createElement('canvas');
+              canvas.width = 512;
+              canvas.height = 256;
+              const ctx = canvas.getContext('2d');
+              ctx.fillStyle = '#EAEAEA';
+              ctx.font = 'bold 50px Arial';
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'middle';
+              ctx.fillText(outputLabels[i], 256, 128);
+              const texture = new THREE.CanvasTexture(canvas);
+              const label = new THREE.Mesh(new THREE.PlaneGeometry(4.0, 2.0), new THREE.MeshBasicMaterial({
+                map: texture,
+                transparent: true
+              }));
+              label.position.x = 1.5;
+              node.add(label);
+            });
+            // MODIFICATION: Adjusted camera to ensure the entire visualization is visible.
+            sceneData.camera.position.set(0, 0, 12);
+            sceneData.camera.lookAt(0, 0, 0);
+            Object.assign(sceneData, {
+              scene,
+              gestureGroup,
+              fingers,
+              nnGroup,
+              layers
+            });
+            addDragControls(container, gestureGroup);
+            addDragControls(container, nnGroup);
+          },
+          onWindowResize: function() {
+            for (const pageId in this.scenes) {
+              const pageScenes = this.scenes[pageId];
+              for (const sceneType in pageScenes) {
+                const sceneData = pageScenes[sceneType];
+                if (sceneData.initialized) {
+                  let container;
+                  if (pageId === 'skills') {
+                    container = document.getElementById(sceneType === 'hardware' ? 'skills-canvas-container' : 'skills-canvas-container-2');
+                  } else {
+                    container = document.getElementById(`${pageId}-canvas-container`);
+                  }
+                  if (container && container.clientWidth > 0 && container.clientHeight > 0) {
+                    const width = container.clientWidth;
+                    const height = container.clientHeight;
+                    sceneData.camera.aspect = width / height;
+                    sceneData.camera.updateProjectionMatrix();
+                    sceneData.renderer.setSize(width, height);
+                    sceneData.renderer.setPixelRatio(window.devicePixelRatio);
+                    if (sceneData.composer) {
+                      sceneData.composer.setSize(width, height);
+                      sceneData.composer.setPixelRatio(window.devicePixelRatio);
+                    }
+                  }
+                }
+              }
+            }
+          },
+          animate: function() {
+            requestAnimationFrame(this.animate.bind(this));
+            const time = Date.now() * 0.001;
+            if (!this.activeSceneId) return;
+            const activePageScenes = this.scenes[this.activeSceneId];
+            if (!activePageScenes) return;
+            for (const sceneType in activePageScenes) {
+              const activeScene = activePageScenes[sceneType];
+              if (activeScene && activeScene.initialized) {
+                if (this.activeSceneId === 'home') {
+                  // Home scene animation
+                  activeScene.reactorGroup.rotation.y += 0.001;
+                  activeScene.controlRods.forEach((rod, i) => {
+                    rod.position.y = Math.sin(time * 0.7 + i * (Math.PI / 4)) * 0.5 - 0.5;
+                  });
+                  const positions = activeScene.particleSystem.geometry.attributes.position.array;
+                  for (let i = 0; i < positions.length / 3; i++) {
+                    positions[i * 3 + 1] -= 0.02;
+                    if (positions[i * 3 + 1] < -1.5) positions[i * 3 + 1] = 1.5;
+                  }
+                  activeScene.particleSystem.geometry.attributes.position.needsUpdate = true;
+                  activeScene.composer.render();
+                } else if (this.activeSceneId === 'about') {
+                  // About scene animation
+                  const panelSize = activeScene.panelSize;
+                  const photonPos = activeScene.photons.geometry.attributes.position.array;
+                  for (let i = 0; i < photonPos.length / 3; i++) {
+                    photonPos[i * 3 + 1] -= 0.02;
+                    if (photonPos[i * 3 + 1] < 0.05) photonPos[i * 3 + 1] = Math.random() * 2 + 0.5;
+                  }
+                  activeScene.photons.geometry.attributes.position.needsUpdate = true;
+                  let totalIntensity = 0;
+                  activeScene.cells.forEach(cell => {
+                    const dist = cell.position.distanceTo(activeScene.lightSource.position);
+                    const intensity = Math.max(0, 1 - dist / 2.5);
+                    cell.material.emissiveIntensity = intensity * 2;
+                    cell.material.emissive.setHex(intensity > 0.1 ? 0x0055aa : 0x000000);
+                    totalIntensity += intensity;
+                  });
+                  activeScene.electrons.material.opacity = Math.min(1, totalIntensity / 3);
+                  const electronPos = activeScene.electrons.geometry.attributes.position.array;
+                  const electronVel = activeScene.electrons.geometry.attributes.velocity.array;
+                  const panelBounds = panelSize / 2;
+                  for (let i = 0; i < electronPos.length / 3; i++) {
+                    electronPos[i * 3] += electronVel[i * 3];
+                    electronPos[i * 3 + 2] += electronVel[i * 3 + 2];
+                    if (Math.abs(electronPos[i * 3]) > panelBounds || Math.abs(electronPos[i * 3 + 2]) > panelBounds) {
+                      electronPos[i * 3] = (Math.random() - 0.5) * panelSize;
+                      electronPos[i * 3 + 2] = (Math.random() - 0.5) * panelSize;
+                    }
+                  }
+                  activeScene.electrons.geometry.attributes.position.needsUpdate = true;
+                  activeScene.renderer.render(activeScene.scene, activeScene.camera);
+                } else if (this.activeSceneId === 'skills') {
+                  if (sceneType === 'hardware') {
+                    // Hardware visual animation
+                    const loopDuration = 3;
+                    const progress = (time % loopDuration) / loopDuration;
+                    activeScene.primerRoller.rotation.x = time * 5;
+                    activeScene.ejectRoller1.rotation.x = time * -5;
+                    activeScene.ejectRoller2.rotation.x = time * 5;
+                    let cardZ = 0;
+                    let statusText = "STATUS: STANDBY";
+                    if (progress < 0.5) {
+                      cardZ = (progress / 0.5) * 1.2;
+                      statusText = "STATUS: PRIMING CARD";
+                    } else {
+                      const ejectProgress = (progress - 0.5) / 0.5;
+                      cardZ = 1.2 + ejectProgress * 1.5;
+                      statusText = ejectProgress > 0.5 ? "CARD: ACE OF SPADES" : "YOLOv8: DETECTING...";
+                    }
+                    activeScene.animatedCard.position.z = cardZ;
+                    const ctx = activeScene.textContext;
+                    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                    ctx.fillStyle = '#00BFFF';
+                    ctx.font = '20px Roboto Mono';
+                    ctx.fillText('CAMERA FEED', 10, 30);
+                    ctx.fillStyle = '#EAEAEA';
+                    ctx.font = '16px Roboto Mono';
+                    ctx.fillText(statusText, 10, 70);
+                    activeScene.textTexture.needsUpdate = true;
+                    activeScene.packets.forEach(p => {
+                      p.progress = (p.progress + 0.01) % 1;
+                      p.path.getPointAt(p.progress, p.mesh.position);
+                    });
+                    if (progress > 0.98) activeScene.animatedCard.position.z = 0;
+                    activeScene.renderer.render(activeScene.scene, activeScene.camera);
+                  } else if (sceneType === 'software') {
+                    const gestureProgress = Math.sin(time * 1.5);
+                    const isHit = gestureProgress > 0;
+                    activeScene.fingers.forEach((finger, i) => {
+                      const curl = -Math.PI / 2;
+                      if (isHit) {
+                        if (i === 1) {
+                          finger.j1.rotation.x = 0;
+                          finger.j2.rotation.x = 0;
+                        } else {
+                          finger.j1.rotation.x = curl;
+                          finger.j2.rotation.x = curl;
+                        }
+                      } else {
+                        finger.j1.rotation.x = 0;
+                        finger.j2.rotation.x = 0;
+                      }
+                    });
+                    const pulseTime = (time * 2) % (Math.PI * 2);
+                    activeScene.layers.forEach((layer, i) => {
+                      layer.forEach((node, j) => {
+                        const pulse = Math.sin(pulseTime - i * 2 - j * 0.5) * 0.5 + 0.5;
+                        node.material.color.setHSL(0.55, 1, 0.5 + pulse * 0.4);
+                      });
+                    });
+                    activeScene.layers[2][0].material.color.setHex(isHit ? 0x444444 : 0x00ff00); // Stand
+                    activeScene.layers[2][1].material.color.setHex(isHit ? 0x00ff00 : 0x444444); // Hit
+                    activeScene.renderer.render(activeScene.scene, activeScene.camera);
+                  }
+                }
+              }
+            }
+          }
         };
-        resumeModal.addEventListener("click", (e) => { if (e.target === resumeModal) closeResumeModal(); });
-        window.addEventListener('resize', () => {
-            setupCanvas();
-            initParticles();
-        });
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) {
-                backToTopBtn.classList.remove('opacity-0', 'translate-y-10');
-                backToTopBtn.classList.add('opacity-100', 'translate-y-0');
-            } else {
-                backToTopBtn.classList.remove('opacity-100', 'translate-y-0');
-                backToTopBtn.classList.add('opacity-0', 'translate-y-10');
-            }
-        });
-        backToTopBtn.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
-        qs("#currentYear").textContent = new Date().getFullYear();
-        document.addEventListener('DOMContentLoaded', () => {
-            if (landing && !landing.classList.contains("hidden")) {
-                 document.body.style.overflow = 'hidden';
-                 setupCanvas();
-                 initParticles();
-                 animateParticles();
-            } else {
-                document.body.style.overflow = 'auto';
-            }
-            renderFilterButtons();
-            renderProjects();
-            const initialPage = window.location.hash ? window.location.hash.substring(1) : 'homeSection';
-            const initialNavButton = qs(`#mainNav button[data-page="${initialPage}"]`);
-            if (initialNavButton) {
-                initialNavButton.click();
-            } else {
-                qs('#mainNav button[data-page="homeSection"]').click();
-            }
-        });
+        // --- INITIALIZE ---
+        renderCategoryFilters();
+        renderProjectGrid();
+        renderSkills();
+        sceneManager.init();
+        switchPage('home'); // Set initial page
+      });
     </script>
-</body>
+  </body>
 </html>
