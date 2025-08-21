@@ -326,7 +326,7 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
                 <div>
                   <p class="font-semibold text-text-primary mb-1">Programming & Development</p>
-                  <p class="text-text-secondary leading-tight">Python, C/C++, JS, HTML/CSS, Git, Embedded Systems, PID Control</p>
+                  <p class="text-text-secondary leading-tight">Python, C/C++, JS, HTML/CSS, Tailwind CSS, THREE.js, Git, Embedded Systems, PID Control</p>
                 </div>
                 <div>
                   <p class="font-semibold text-text-primary mb-1">Modeling & Simulation</p>
@@ -517,6 +517,19 @@
         // --- DATA ---
         const projects = [
             {
+                id: 'portfolio-website',
+                title: "Muqtadir's Engineering Portfolio (This Website)",
+                category: "Web & 3D Development",
+                tags: ["SPA", "Vanilla JS", "HTML5", "Tailwind CSS", "THREE.js", "LLM"],
+                bullets: [
+                    "Engineered a responsive Single-Page Application (SPA) using a vanilla JavaScript, HTML5, and Tailwind CSS stack, leveraging LLMs (Gemini 2.5 Pro, GPT-o4-mini-high) to accelerate the development lifecycle from boilerplate code generation to debugging.",
+                    "Architected a modular THREE.js rendering pipeline, governed by a custom scene manager object, to encapsulate the lifecycle (initialization, animation, rendering) of multiple, independent 3D visualizations.",
+                    "Developed a client-side rendering system in JavaScript that dynamically generates all project and skill-based DOM elements from a local data array, allowing for scalable and instantly updatable content.",
+                    "Implemented an advanced graphics stack featuring a THREE.js EffectComposer with an UnrealBloomPass shader for emissive lighting, and integrated raycasting for interactive, mouse-driven scene events."
+                ],
+                media: []
+            },
+            {
                 id: 'blackjack-dealer',
                 title: "Autonomous Blackjack-Dealing System – Engineering Physics Capstone Project",
                 category: "Capstone Projects",
@@ -694,30 +707,32 @@
             },
         ];
         const skills = {
-          "Software & Programming": [
-            "C, Python, MATLAB",
-            "JavaScript, HTML, CSS",
-            "MSP430 Assembly",
-            "SQL, MongoDB",
-            "LabVIEW, Multisim",
-            "Git, GitHub"
-          ],
-          "Engineering & Design": [
-            "Embedded Systems",
-            "PID Control Systems",
-            "Semiconductor TCAD",
-            "Optical Systems (Zemax)",
-            "Nuclear Systems (MCNP)",
-            "CAD, 3D Printing"
-          ],
-          "Analytical & Other": [
-            "Data Analysis",
-            "Signal Processing",
-            "Fluid & Thermal Analysis",
-            "Technical Writing",
-            "Project Management",
-            "Critical Thinking"
-          ]
+            "Software & Programming": [
+                "C, Python, MATLAB",
+                "JavaScript, HTML, CSS",
+                "Tailwind CSS",
+                "MSP430 Assembly",
+                "SQL, MongoDB",
+                "Git, GitHub",
+                "LLM-Assisted Development"
+            ],
+            "Engineering & Design": [
+                "THREE.js (3D Graphics)",
+                "Embedded Systems",
+                "PID Control Systems",
+                "Semiconductor TCAD",
+                "Optical Systems (Zemax)",
+                "Nuclear Systems (MCNP)",
+                "CAD, 3D Printing"
+            ],
+            "Analytical & Other": [
+                "Data Analysis",
+                "Signal Processing",
+                "Fluid & Thermal Analysis",
+                "Technical Writing",
+                "Project Management",
+                "Critical Thinking"
+            ]
         };
         // --- DOM ELEMENTS ---
         const projectGrid = document.getElementById('project-grid');
