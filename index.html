@@ -369,6 +369,20 @@
                 <div class="resume-item">
                   <div class="resume-item-header">
                     <p class="resume-item-title">
+                      <strong>Midas Core – J.P. Morgan Software Engineering Job Simulation</strong>
+                    </p>
+                    <p class="resume-item-date">August 2025</p>
+                  </div>
+                  <ul class="resume-item-bullets list-disc">
+                    <li>Architected an event-driven ingestion pipeline with Spring Boot (Java 17) + Kafka, deserializing transaction events to decouple producers, absorb bursts, and support horizontal scaling (validated with embedded broker tests via Maven).</li>
+                    <li>Designed a relational domain model with JPA and an in-memory SQL store (H2 database); enforced ID/funds invariants and implemented transactional balance updates to ensure atomicity and consistency.</li>
+                    <li>Integrated an external Incentive REST service with timeouts and fail-open defaults; composed business logic to credit recipients (amount + incentive) while debiting senders (amount only), persisting a clear audit trail.</li>
+                    <li>Exposed a minimal read API (GET /balance) returning a typed DTO so users can see current balances; improved operability and testability via clean DI layering (listener → service → repository → controller) and self-contained H2 integration tests.</li>
+                  </ul>
+                </div>
+                <div class="resume-item">
+                  <div class="resume-item-header">
+                    <p class="resume-item-title">
                       <strong>Autonomous Blackjack-Dealing System</strong> – Capstone Project
                     </p>
                     <p class="resume-item-date">Sep 2024 - Apr 2025</p>
@@ -377,19 +391,6 @@
                     <li>Engineered and built a fully autonomous, gesture-controlled Blackjack dealer from concept to final demonstration.</li>
                     <li>Integrated a 3D-printed mechanical dispenser with an Arduino-controlled motor system that achieved an 85% single-card deal success rate.</li>
                     <li>The system's Python-based software used a MediaPipe neural network to classify 'Hit'/'Stand' hand gestures with 99.88% accuracy and a separate YOLOv8 model to recognize dealt cards, with all game states displayed through a custom Tkinter GUI.</li>
-                  </ul>
-                </div>
-                <div class="resume-item">
-                  <div class="resume-item-header">
-                    <p class="resume-item-title">
-                      <strong>SOTI Inc, Mississauga, ON</strong> – Industry Consulting Project
-                    </p>
-                    <p class="resume-item-date">Sep 2024 - Dec 2024</p>
-                  </div>
-                  <ul class="resume-item-bullets list-disc">
-                    <li>Co-engineered an AI-driven autonomous client-engagement system to resolve lead-qualification and conversion inefficiencies for enterprise software firm SOTI, integrating business-process mapping with NLP-capable virtual agents.</li>
-                    <li>Built a data-backed cost & performance model (CAD $10k phased budget, KPIs, risk register); compared two architecture options with a weighted-scoring matrix and selected the higher-ROI solution for pilot rollout.</li>
-                    <li>Co-authored a client deck and executive presentation detailing system architecture, decision logic, risk mitigations and projected increases in leads and conversion (30% and 15% respectively), securing stakeholder approval.</li>
                   </ul>
                 </div>
                 <div class="resume-item">
@@ -515,19 +516,7 @@
     <script>
       document.addEventListener('DOMContentLoaded', function() {
         // --- DATA ---
-        const projects = [{
-                id: 'jp-morgan-sim',
-                title: "Midas Core – J.P. Morgan Software Engineering Job Simulation",
-                category: "Software Engineering Simulations",
-                tags: ["Java", "Spring Boot", "Kafka", "JPA", "H2", "Event-Driven", "REST API"],
-                bullets: [
-                    "Architected an event-driven ingestion pipeline with Spring Boot (Java 17) + Kafka, deserializing transaction events to decouple producers, absorb bursts, and support horizontal scaling (validated with embedded broker tests via Maven).",
-                    "Designed a relational domain model with JPA and an in-memory SQL store (H2 database); enforced ID/funds invariants and implemented transactional balance updates to ensure atomicity and consistency.",
-                    "Integrated an external Incentive REST service with timeouts and fail-open defaults; composed business logic to credit recipients (amount + incentive) while debiting senders (amount only), persisting a clear audit trail.",
-                    "Exposed a minimal read API (GET /balance) returning a typed DTO so users can see current balances; improved operability and testability via clean DI layering (listener → service → repository → controller) and self-contained H2 integration tests."
-                ],
-                media: [{ type: "pdf", src: "media/J.P Morgan SFWENG Job Sim Certificate.pdf", name: "Completion Certificate" }]
-            },
+        const projects = [
             {
                 id: 'portfolio-website',
                 title: "Muqtadir's Engineering Portfolio (This Website)",
