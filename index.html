@@ -516,7 +516,20 @@
     <script>
       document.addEventListener('DOMContentLoaded', function() {
         // --- DATA ---
-        const projects = [
+        const projects = [{
+                id: 'jp-morgan-sim',
+                title: "Midas Core | J.P. Morgan Software Engineering Job Simulation",
+                category: "Software Engineering Simulations",
+                tags: ["Java", "Spring Boot", "Kafka", "JPA", "H2", "Event-Driven", "REST API"],
+                bullets: [
+                    "Architected an event-driven ingestion pipeline with Spring Boot (Java 17) + Kafka, deserializing transaction events to decouple producers, absorb bursts, and support horizontal scaling (validated with embedded broker tests via Maven).",
+                    "Designed a relational domain model with JPA and an in-memory SQL store (H2 database); enforced ID/funds invariants and implemented transactional balance updates to ensure atomicity and consistency.",
+                    "Integrated an external Incentive REST service with timeouts and fail-open defaults; composed business logic to credit recipients (amount + incentive) while debiting senders (amount only), persisting a clear audit trail.",
+                    "Exposed a minimal read API (GET /balance) returning a typed DTO so users can see current balances; improved operability and testability via clean DI layering (listener → service → repository → controller) and self-contained H2 integration tests."
+                ],
+                media: [{ type: "pdf", src: "media/J.P Morgan SFWENG Job Sim Certificate.pdf", name: "Completion Certificate" }]
+            },
+
             {
                 id: 'portfolio-website',
                 title: "Muqtadir's Engineering Portfolio (This Website)",
