@@ -9,6 +9,7 @@ import {
 } from './data'
 
 const signalBars = [18, 27, 12, 31, 44, 28, 20, 55, 36, 24, 68, 92, 61, 38, 26, 46, 34, 72, 42, 30, 22, 48, 32, 16, 28, 57, 39, 21, 13, 26, 19, 11]
+const baseUrl = import.meta.env.BASE_URL
 
 function SignalField() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -248,7 +249,7 @@ function App() {
             <p className="intro">RF and edge-AI systems work spanning SDR acquisition, real-time inference, embedded Linux, operator tooling, and space experimentation.</p>
             <div className="hero-actions">
               <a className="primary-action" href="#systems">Explore the system <span aria-hidden="true">↓</span></a>
-              <a className="text-action" href="/media/Muq_Hussain_Resume.pdf" target="_blank" rel="noreferrer">Resume <span aria-hidden="true">↗</span></a>
+              <a className="text-action" href={`${baseUrl}media/Muq_Hussain_Resume.pdf`} target="_blank" rel="noreferrer">Resume <span aria-hidden="true">↗</span></a>
             </div>
           </div>
 
@@ -439,8 +440,8 @@ function App() {
             <h2>One page.<br />Current signal.</h2>
             <p>A rebuilt resume focused on intelligent radio, edge inference, embedded Linux, technical leadership, and the Engineering Physics foundation underneath it.</p>
             <div className="resume-actions">
-              <a className="primary-action" href="/media/Muq_Hussain_Resume.pdf" target="_blank" rel="noreferrer">Download PDF <span>↓</span></a>
-              <a className="text-action" href="/media/Muq_Hussain_Resume.docx">Editable DOCX <span>↓</span></a>
+              <a className="primary-action" href={`${baseUrl}media/Muq_Hussain_Resume.pdf`} target="_blank" rel="noreferrer">Download PDF <span>↓</span></a>
+              <a className="text-action" href={`${baseUrl}media/Muq_Hussain_Resume.docx`}>Editable DOCX <span>↓</span></a>
             </div>
           </div>
         </section>
