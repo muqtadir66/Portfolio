@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "tsc -b && vite build",
+    "prebuild": "node scripts/clean-build.mjs",
+    "build": "tsc -b && XDG_CONFIG_HOME=/tmp/muq-portfolio-config WRANGLER_LOG_PATH=/tmp/muq-portfolio-wrangler.log vite build && node scripts/stage-sites-build.mjs",
     "preview": "vite preview --host 0.0.0.0"
   },
   "dependencies": {
@@ -13,11 +14,13 @@
     "react-dom": "^19.2.8"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.54.2",
     "@openai/sites-vite-plugin": "^0.2.0",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.5",
     "@vitejs/plugin-react": "^6.1.1",
     "typescript": "^7.0.2",
-    "vite": "^8.2.2"
+    "vite": "^8.2.2",
+    "wrangler": "^4.127.1"
   }
 }
